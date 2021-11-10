@@ -61,6 +61,8 @@ void main(int argc, char* argv[] ){
    
     // Function for chatting between client and server
     char buffer[100];
+    int size = read(connfd, buffer,100);
+    printf("PACKET: %s %d %d\n",buffer, size,port);
     sprintf(buffer,"Hello World Port : %d",port);
    write(connfd,buffer,strlen(buffer));
     // After chatting close the socket

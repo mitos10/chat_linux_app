@@ -1,5 +1,15 @@
 #include "list.h"
 
+//TODO
+
+//REFACTOR FIND NODE ASAP. Right now is going through the list over and over for each element.
+/*
+Options, join get_node and find_node (search_node better?) under the next prototype
+#define search_node(...) get_node(...)????? and arg check
+NODE* get_node ( LIST* const l, unsigned int index,  int* pos, unsigned int (*cmp_data)(void* s_data, void* data), void* s_data);
+Or reuse the get node code inside find node to keep interfaces cleaner.
+*/
+
 NODE* create_node(void* data){
 
 	NODE* nd = malloc(sizeof(NODE));
@@ -85,13 +95,15 @@ NODE* remove_node(ROOT list_root, unsigned int pos){
 	return aux;
 }
 
-NODE* find_node(LIST* l, unsigned int (*cmp_data)(void* s_data, void* data), void* s_data){
+NODE* find_node(LIST* l, unsigned int* pos, unsigned int (*cmp_data)(void* s_data, void* data), void* s_data){
 	int i;
 	int l_size = list_size(l);
 	for(i = 0; i < l_size; i++){
 		NODE* node = get_node(l, i);
-		if((*cmp_data)(s_data, node->data)==1)
+		if((*cmp_data)(s_data, node->data)==1){
+			if(pos!=NULL) *pos = i;
 			return node;
+		}
 	}
 	return NULL;
 }

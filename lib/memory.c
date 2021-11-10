@@ -19,7 +19,7 @@ void* init_memory(char* id, size_t size){
 }
 
 void* cmalloc(size_t size, char* id){
-    pool_node* aux = (pool_node*)find_node(&pool_list,_cmp_id,id)->data;
+    pool_node* aux = (pool_node*)find_node(&pool_list, NULL,_cmp_id,id)->data;
     unsigned int pool_chunks_sz = CHUNK_SECTION_SIZE(aux->size), gap_size = 0, i, ii;
     unsigned int reserve_flag = FALSE;
     char* init_ptr = aux->data;
@@ -55,7 +55,7 @@ void* cmalloc(size_t size, char* id){
 }
 
 void cfree(void* ptr, char* id){
-    pool_node* aux = (pool_node*)find_node(&pool_list,_cmp_id,id)->data;
+    pool_node* aux = (pool_node*)find_node(&pool_list, NULL,_cmp_id,id)->data;
     unsigned int init_char = ((char*)ptr - (char*)aux->data) / (CHUNK_SIZE * 8 );
     unsigned int offset = ( ((char*)ptr - (char*)aux->data) % (CHUNK_SIZE * 8 ) ) / CHUNK_SIZE;
     unsigned short gap_size = *((unsigned short*) (ptr - 2) );
@@ -70,7 +70,7 @@ void cfree(void* ptr, char* id){
 }
 
 void print_mem(char* id){
-    pool_node* aux = (pool_node*)find_node(&pool_list,_cmp_id,id)->data;
+    pool_node* aux = (pool_node*)find_node(&pool_list, NULL,_cmp_id,id)->data;
     for(int i = 0; i < CHUNK_SECTION_SIZE(aux->size); i++)
         printf("0x%.2hhX ",((char*)aux->pool_chunks)[i]);
     printf("\n");
