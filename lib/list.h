@@ -13,8 +13,8 @@ typedef struct node {
 	struct node* next_ptr;
 }NODE;
 
-typedef NODE *LIST;
-typedef NODE **ROOT;
+typedef NODE*  LIST;
+typedef NODE** ROOT;
 
 #define LIST(x) LIST x = NULL;
 

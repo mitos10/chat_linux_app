@@ -1,3 +1,6 @@
+#ifndef SOCKET_H
+#define SOCKET_H
+
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <string.h>
@@ -14,6 +17,8 @@
 #define MAX_PACKAGE_SIZE 4 + 4096 + 4
 
 enum { SOCKET_CREATION_FAIL = 0, SOCKET_CONNECTION_FAIL = 1, SUCCESS = 2} SOCKET_ADD_RESP;
+
+enum { TCP = 0, UDP =1};
 
 typedef struct pack_node {
 	unsigned int id : 30;
@@ -55,7 +60,7 @@ void init_sockets();
  enum SOCKET_ADD_RESP
  
 */
-int add_socket(struct sockaddr_in *sockaddr, char *user);
+int add_socket(struct sockaddr_in *sockaddr, char *user, int type);
 
 /*
 -Func definition:
@@ -88,3 +93,5 @@ int read_queue(pack_node* data);
  TRUE or FALSE
 */
 int package_is_sent(int id);
+
+#endif

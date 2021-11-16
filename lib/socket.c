@@ -3,12 +3,12 @@
 #include <poll.h>
 
 QUEUE (_send_queue);
-QUEUE (_recv_queue); 
+QUEUE (_recv_queue);
 
 typedef struct dict_node{ 
 	char *user;
 	int fd;
-	int num_packets;
+	int type;
 }dict_node;
 
 DICTIONARY (user_fd_dict);
@@ -84,9 +84,9 @@ void init_sockets(){
 	pthread_create(&thread_id, NULL, _connection_thread, NULL);
 }
 
-int add_socket(struct sockaddr_in *sockaddr, char *user){
+int add_socket(struct sockaddr_in *sockaddr, char *user, int type){
 	int sockfd;
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	sockfd = socket(AF_INET, type == TCP? SOCK_STREAM : SOCK_DGRAM, 0);
 
     if (sockfd == -1) {
 		#ifdef DEBUG
@@ -111,7 +111,7 @@ int add_socket(struct sockaddr_in *sockaddr, char *user){
 		printf("SOCK ID %d\n",sockfd);
 	#endif
     dict_sock->user = (char*) malloc(strlen(user));
-	dict_sock->num_packets = 0;
+	dict_sock->type = type;
     strcpy(dict_sock->user, user);
 
     insert_node(&user_fd_dict, create_node(dict_sock), LAST_NODE);
@@ -121,22 +121,22 @@ int add_socket(struct sockaddr_in *sockaddr, char *user){
 
 int write_queue(pack_node *data){
 	dict_node* user;
-	if(	( user = (dict_node*)find_node(&user_fd_dict, NULL,_cmp_username, data->user)->data ) != NULL ){
+	NODE* aux = NULL; 
+	if(	( aux = find_node(&user_fd_dict, NULL,_cmp_username, data->user) ) != NULL ){
+		user = (dict_node*) aux->data;
 		#ifdef DEBUG
 			printf("USER: %s\n",data->user);
 		#endif
-		user->num_packets++;
 		insert_node(&_send_queue, create_node(data), LAST_NODE);
 	}else printf("USER NOT FOUND: %s\n",data->user);
 
 	#ifdef DEBUG
-	printf("QUEUE PRINT:\n");
+	printf("QUEUE PRINT OUT:\n");
 	print_list(stdout,_send_queue,_print_queue);
-	fflush(stdout);
 	#endif	
 	
 	return 1;
-}
+}	
 
 int read_queue(pack_node *data){
 	data = remove_node(&_recv_queue, LAST_NODE)->data;
@@ -153,10 +153,8 @@ void* _connection_thread(void * param){
 		poll(_fds,_nfds,1000);
 		while(_send_package() != 0);
 		for(int i = 0; i < _nfds; i++){
-
-			if(_fds[i].revents & POLLIN){
+			if(_fds[i].revents & POLLIN)
 				_recv_package(_fds[i].fd);
-			}
 		}
 	}
 }
@@ -165,36 +163,39 @@ int _send_package(){
 
 	int pos = 0;
 	if(list_size(&_send_queue)){
+		
 		NODE *pn_aux = remove_node(&_send_queue, 0);
-		char header[HEADER_SIZE], *payload, end_symbol[LAST_SYMBOL_SIZE];
-		
-		memcpy(header, &((pack_node*)pn_aux->data)->size, sizeof(unsigned int));
-		payload  = ((pack_node*)pn_aux->data)->data;
-		memset(end_symbol, '"', sizeof(unsigned int));
-
-		char pack_buffer[((pack_node*)pn_aux->data)->size + 4 + 4];
-		
-		memcpy(pack_buffer, &(((pack_node*)pn_aux->data)->size), sizeof(unsigned int));
-		memcpy(pack_buffer + sizeof(header), payload, ((pack_node*)pn_aux->data)->size);
-		memcpy(pack_buffer + sizeof(header) +((pack_node*)pn_aux->data)->size, end_symbol, sizeof(end_symbol));
-	
-	#ifdef DEBUG
-		printf("Packet: ");
-		for(int i = 0; i < ((pack_node*)pn_aux->data)->size + 4 + 4; i++)
-			printf("%c",pack_buffer[i]);
-		printf("\n");
-	#endif
-
 		int user_fd = ((dict_node*) find_node(&user_fd_dict, NULL,_cmp_username, ((pack_node*)pn_aux->data)->user)->data)->fd;
-		fflush(stdout);
-		return send(user_fd, pack_buffer, sizeof(pack_buffer), 0);
+		int type = ((dict_node*) find_node(&user_fd_dict, NULL,_cmp_username, ((pack_node*)pn_aux->data)->user)->data)->type;
+
+		if(type == TCP){
+			char header[HEADER_SIZE], *payload, end_symbol[LAST_SYMBOL_SIZE];
+			
+			memcpy(header, &((pack_node*)pn_aux->data)->size, sizeof(unsigned int));
+			payload  = ((pack_node*)pn_aux->data)->data;
+			memset(end_symbol, '"', sizeof(unsigned int));
+
+			char pack_buffer[((pack_node*)pn_aux->data)->size + 4 + 4];
+			
+			memcpy(pack_buffer, &(((pack_node*)pn_aux->data)->size), sizeof(unsigned int));
+			memcpy(pack_buffer + sizeof(header), payload, ((pack_node*)pn_aux->data)->size);
+			memcpy(pack_buffer + sizeof(header) +((pack_node*)pn_aux->data)->size, end_symbol, sizeof(end_symbol));
+		
+			#ifdef DEBUG
+				printf("Packet: ");
+				for(int i = 0; i < ((pack_node*)pn_aux->data)->size + 4 + 4; i++)
+					printf("%c",pack_buffer[i]);
+				printf("\n");
+			#endif
+
+			return send(user_fd, pack_buffer, sizeof(pack_buffer), 0);
+		} 	else return send(user_fd, ((pack_node*)pn_aux->data)->data, ((pack_node*)pn_aux->data)->size, 0);
 	}
 	return 0;
 	//DELETE NODE AT LIST
 }
 
 int _recv_package(int fd){
-	fflush(stdout);
 	char buffer_recv[MAX_PACKAGE_SIZE];
 	unsigned int size = recv(fd,buffer_recv,MAX_PACKAGE_SIZE,0);
 	if(size > 0){
@@ -207,8 +208,9 @@ int _recv_package(int fd){
 	strcpy(pack_aux->user, user_name);
 
 	insert_node(&_recv_queue, create_node(pack_aux), -1);
+
 	#ifdef DEBUG
-		printf("QUEUE PRINT:\n");
+		printf("QUEUE PRINT IN:\n");
 		print_list(stdout,_recv_queue,_print_queue);
 	#endif
 	}
@@ -233,5 +235,9 @@ unsigned int _cmp_id(void* s_data, void* data){
 
 void _print_queue(FILE*f, void* nd){
 	pack_node *aux = (pack_node*) nd;
-	fprintf(f, "User: %s Size: %d Message: %s \n",aux->user,aux->size, (char*)aux->data);
+	fprintf(f, "User: %s Size: %d Message: ",aux->user,aux->size);
+	for(int i = 0; i < aux->size; i++){
+		fprintf(f,"%.2hhX",((char*)aux->data)[i]);
+	}
+	fprintf(f,"\n");
 }

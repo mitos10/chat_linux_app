@@ -65,6 +65,10 @@ void main(int argc, char* argv[] ){
     printf("PACKET: %s %d %d\n",buffer, size,port);
     sprintf(buffer,"Hello World Port : %d",port);
    write(connfd,buffer,strlen(buffer));
+   sleep(2);
+   write(connfd,buffer,strlen(buffer));
+   sleep(2);
+   write(connfd,buffer,strlen(buffer));
     // After chatting close the socket
     close(sockfd);
 }
