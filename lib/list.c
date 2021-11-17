@@ -74,7 +74,7 @@ NODE* remove_node(ROOT list_root, unsigned int pos){
 
 	unsigned int end_flag = ! (pos + 1);
 
-	if(list_root != NULL){
+	if(*list_root != NULL){
 
 		LIST* aux_root = list_root;
 		LIST* prev_node = aux_root;

@@ -138,9 +138,11 @@ int write_queue(pack_node *data){
 	return 1;
 }	
 
-int read_queue(pack_node *data){
-	data = remove_node(&_recv_queue, LAST_NODE)->data;
-	return 1;
+pack_node* read_queue(){
+	NODE* aux = remove_node(&_recv_queue, LAST_NODE);
+	if(aux != NULL)
+		return aux->data;
+	else return NULL;
 }
 
 int package_is_sent(int id){

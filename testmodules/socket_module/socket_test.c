@@ -1,6 +1,7 @@
 #include "socket_test.h"
 
 void main(){
+    
     struct sockaddr_in aux;
     unsigned short port = 8888;
     aux.sin_family = AF_INET;
@@ -25,8 +26,14 @@ void main(){
         write_queue(&a[i]);
     }
 
+    init_DNS_serv();
+    dns_request("es.pool.ntp.org");
+    
     init_NTP_serv();
     request_NTP_time();
+    while(process_test() != TRUE);
 
-    while(1);
+    printf("TIME: %u\n",get_UNIX_time());
+
 }
+

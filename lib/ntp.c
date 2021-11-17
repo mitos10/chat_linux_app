@@ -4,10 +4,13 @@
 //ADD DNS server requests
 //https://www.binarytides.com/dns-query-code-in-c-with-winsock/
 
-static unsigned int UNIX_time = 0;
+static unsigned int _UNIX_time = 0;
+static unsigned int _updated = FALSE;
 
 int init_NTP_serv()
 {
+    _UNIX_time = 0;
+    _updated = FALSE;
     struct sockaddr_in aux;
     aux.sin_family = AF_INET;
     aux.sin_addr.s_addr = inet_addr("162.159.200.123");
@@ -17,6 +20,7 @@ int init_NTP_serv()
 
 void request_NTP_time()
 {
+    _updated = FALSE;
     pack_node* ntp_pack = (pack_node*)malloc(sizeof(pack_node));
     ntp_pack->user = malloc(50);
     sprintf(ntp_pack->user,"NTP");
@@ -27,9 +31,12 @@ void request_NTP_time()
 }
 
 unsigned int get_UNIX_time(){
-    return UNIX_time;
+    if(_updated != TRUE)
+        return 0;
+    else return _UNIX_time;
 }
 
 void _process_NTP_pack(pack_node* NTP_pack){
-    UNIX_time = ( ( *((unsigned long *)NTP_pack->data) >> 32) & 0xFFFFFFFF ) - 2208988800;
+    _UNIX_time = ntohl( ( (unsigned int *)NTP_pack->data) [10] ) - 2208988800;
+    _updated = TRUE;
 }

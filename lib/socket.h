@@ -82,7 +82,7 @@ int write_queue(pack_node* data);
  Size read
  < = 0 on error
 */
-int read_queue(pack_node* data);
+pack_node* read_queue(void);
 
 /*
 -Func definition:
