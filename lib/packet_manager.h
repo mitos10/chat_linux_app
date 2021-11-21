@@ -9,6 +9,10 @@ int process_test(){
     do{
         a=read_queue();
         if(a != NULL){
+            printf("USERss: %s %d\n",a->user, a->size);
+            for(int i = 0; i < a->size; i++)
+                printf("%.2hhX ", *((char*)a->data+i));
+            printf("\n");
             if(strcmp (a->user, "NTP") == 0){
                 found = TRUE;
                 _process_NTP_pack(a);

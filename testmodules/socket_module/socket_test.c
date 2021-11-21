@@ -27,11 +27,11 @@ void main(){
     }
 
     init_DNS_serv();
-    dns_request("es.pool.ntp.org");
-    
-    init_NTP_serv();
-    request_NTP_time();
+	pthread_t thread_id;
+	pthread_create(&thread_id, NULL, init_NTP_serv, NULL);
     while(process_test() != TRUE);
+
+    //printf("IP MAIN: %s\n",get_IP(id_DNS));
 
     printf("TIME: %u\n",get_UNIX_time());
 

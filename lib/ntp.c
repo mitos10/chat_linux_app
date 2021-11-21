@@ -1,21 +1,29 @@
 #include "ntp.h"
 
-//ADD thread to do everything
-//ADD DNS server requests
 //https://www.binarytides.com/dns-query-code-in-c-with-winsock/
+//https://electronicspost.com/dns-messages/
+//http://www.tcpipguide.com/free/t_DNSMessageHeaderandQuestionSectionFormat.htm
+//https://courses.cs.duke.edu//fall16/compsci356/DNS/DNS-primer.pdf
 
 static unsigned int _UNIX_time = 0;
 static unsigned int _updated = FALSE;
 
-int init_NTP_serv()
+void* init_NTP_serv()
 {
     _UNIX_time = 0;
     _updated = FALSE;
     struct sockaddr_in aux;
     aux.sin_family = AF_INET;
-    aux.sin_addr.s_addr = inet_addr("162.159.200.123");
+    uint16_t ID_DNS = DNS_request("es.pool.ntp.org");
+    char *IP_DNS = NULL;
+    while( (IP_DNS = get_IP(ID_DNS)) == NULL);
+    printf("IP DNS %s\n",IP_DNS);
+    fflush(stdout);
+    aux.sin_addr.s_addr = inet_addr(IP_DNS);
+    //aux.sin_addr.s_addr = inet_addr("162.159.200.123");
     aux.sin_port = htons(123);
     add_socket(&aux, "NTP", UDP);
+    request_NTP_time();
 }
 
 void request_NTP_time()

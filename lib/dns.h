@@ -8,19 +8,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-
-typedef struct __attribute__((__packed__)){
-    uint16_t ID;
-    uint16_t flags;
-    uint16_t qdcount;
-    uint16_t ancount;
-    uint16_t nscount;
-    uint16_t arcount;
-}dns_header;
-
 void init_DNS_serv();
-void dns_request(char *host_name);
-char* _dns_parse_hn(char *host_name);
+uint16_t DNS_request(char *host_name);
+char* get_IP(uint16_t ID);
 void _process_dns_packet(pack_node *DNS_pack);
 
 #endif

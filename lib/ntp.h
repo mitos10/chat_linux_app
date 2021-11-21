@@ -3,8 +3,9 @@
 
 #include "socket.h"
 #include "general_definitions.h"
+#include "dns.h"
 
-int init_NTP_serv();
+void* init_NTP_serv();
 
 void request_NTP_time();
 
