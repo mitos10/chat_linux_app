@@ -12,7 +12,7 @@
 
 #define SHA_CHUNK_SIZE 64
 
-typedef struct __attribute__((__packed__)){
+typedef struct __attribute__((__packed__, aligned(4))){
     uint32_t a;
     uint32_t b;
     uint32_t c;

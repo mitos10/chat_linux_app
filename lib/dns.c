@@ -115,7 +115,8 @@ void _process_dns_packet(pack_node *DNS_pack){
 
     if(  (((char*)DNS_pack->data)[pack_size] & 0xFF) == 0xC0 && (((char*)DNS_pack->data)[pack_size+1] & 0xFF) == 0x0C ){
         ((DNS_req_node*)aux->data)->IP = (char*) calloc(200, sizeof(char));
-        sprintf( ((DNS_req_node*)aux->data)->IP,"%d.%d.%d.%d",((char*)DNS_pack->data)[ pack_size + 12] &0xFF, (unsigned int)((unsigned char*)DNS_pack->data)[ pack_size + 13] &0xFF, (unsigned int)((char*)DNS_pack->data)[ pack_size + 14 ]&0xFF, (unsigned int)((char*)DNS_pack->data)[ pack_size + 15 ]&0xFF);
+        sprintf( ((DNS_req_node*)aux->data)->IP,"%d.%d.%d.%d",  (unsigned int)((char*)DNS_pack->data)[ pack_size + 12] &0xFF, (unsigned int)((char*)DNS_pack->data)[ pack_size + 13] &0xFF, 
+                                                                (unsigned int)((char*)DNS_pack->data)[ pack_size + 14 ]&0xFF, (unsigned int)((char*)DNS_pack->data)[ pack_size + 15 ]&0xFF);
     }
 }
 

@@ -1,12 +1,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 #include "memory.h"
 
 LIST (pool_list);
 unsigned int id = 0;
 
 unsigned int _cmp_id(void* s_data, void* data);
+unsigned int _cmp_id_ptr(void* s_data, void* data);
+void _print_node(FILE* f, void* nd);
 
 void* init_memory(char* id, size_t size){
     pool_node* aux = (pool_node*) malloc(sizeof (pool_node));
@@ -14,6 +17,7 @@ void* init_memory(char* id, size_t size){
     strcpy(aux->id, id);
     aux->pool_chunks = aux->data + size;
     aux->size =size;
+    aux->monitor = NULL;
     insert_node(&pool_list,create_node(aux),LAST_NODE);
     return aux->data;
 }
@@ -76,7 +80,41 @@ void print_mem(char* id){
     printf("\n");
 }
 
+void* monitor_cmalloc(size_t size, char* id, char* FILE, int LINE){
+    pool_node* aux = (pool_node*)find_node(&pool_list, NULL,_cmp_id,id)->data;
+    monitor_node* mon = (monitor_node*) calloc(1,sizeof(monitor_node));
+    strcpy( (mon->FILE = (char*) calloc(strlen(FILE), sizeof(char) )) , FILE);
+    mon->LINE = LINE;
+    mon->ptr_id = cmalloc(size, id);
+    mon->time = clock() / (CLOCKS_PER_SEC / 1000);
+    insert_node( &(aux->monitor), create_node(mon), -1);
+    return mon->ptr_id;
+}
+
+void monitor_cfree(void* ptr, char* id){
+    pool_node* aux = (pool_node*)find_node(&pool_list, NULL,_cmp_id,id)->data;
+    int pos;
+    find_node( &(aux->monitor), &pos, _cmp_id_ptr,ptr);
+    remove_node( &(aux->monitor), pos);
+    cfree(ptr, id);
+}
+
+void monitor_print(char *id){
+    pool_node* aux = (pool_node*)find_node(&pool_list, NULL,_cmp_id,id)->data;
+    fprintf(stdout, "ALLOCATED MEMORY:\n");
+    print_list(stdout, aux->monitor, _print_node);
+    fprintf(stdout, "\n");
+}
+
+void _print_node(FILE* f, void* nd){
+    fprintf(stdout, "Memory calloc at position : %p Time: %ld File: %s Line: %d\n", ((monitor_node *)nd)->ptr_id, ((monitor_node *)nd)->time, ((monitor_node *)nd)->FILE, ((monitor_node *)nd)->LINE);
+}
+
 unsigned int _cmp_id(void* s_data, void* data){
     pool_node *aux = (pool_node*) data;
     return !strcmp(s_data, aux->id);
+}
+
+unsigned int _cmp_id_ptr(void* s_data, void* data){
+    return s_data == ((monitor_node*)data)->ptr_id;
 }

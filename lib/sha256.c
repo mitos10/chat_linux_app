@@ -1,5 +1,11 @@
 #include "sha256.h"
 
+#define R_ROT(reg, rot) ((reg << (sizeof(uint32_t) * 8 - rot)) | (reg >> rot))
+#define CH(e, f, g) (( e & f ) ^ ( (~e) & g ))
+#define S0(a)  (R_ROT(a, 2) ^ R_ROT(a, 13) ^ R_ROT(a, 22))
+#define S1(e) (R_ROT(e, 6) ^ R_ROT(e, 11) ^ R_ROT(e, 25))
+#define MA(a,b,c) ((a & b) ^ (a & c) ^ (b & c))
+
 h_state const h_init = { 
     .a = 0x6a09e667,
     .b = 0xbb67ae85,
@@ -23,14 +29,9 @@ uint32_t const k[] = {
 };
 
 int pad_pass(char* pass, char** padded_pass);
+
 void init_w(uint32_t w[64], char* padded_pass, int i);
 
-uint32_t Ch(uint32_t e, uint32_t f, uint32_t g);
-uint32_t s0(uint32_t a);
-uint32_t s1(uint32_t e);
-uint32_t ma(uint32_t a, uint32_t b, uint32_t c);
-
-uint32_t r_rot(uint32_t reg,uint8_t rot);
 void sum_h_prev_h(h_state *sha256_hash, h_state *sha256_prev);
 
 char* endianness_sha(h_state *sha256_hash);
@@ -55,10 +56,10 @@ char* sha256sum( char *pass){
         for(int ii = 0; ii < 64; ii++){
 
             uint32_t sum_wk_v = w[ii] + k[ii];
-            uint32_t Ch_v = Ch(sha256_hash->e,sha256_hash->f,sha256_hash->g);
-            uint32_t ma_v = ma(sha256_hash->a,sha256_hash->b,sha256_hash->c);
-            uint32_t s0_v = s0(sha256_hash->a);
-            uint32_t s1_v = s1(sha256_hash->e);
+            uint32_t Ch_v = CH(sha256_hash->e,sha256_hash->f,sha256_hash->g);
+            uint32_t ma_v = MA(sha256_hash->a,sha256_hash->b,sha256_hash->c);
+            uint32_t s0_v = S0(sha256_hash->a);
+            uint32_t s1_v = S1(sha256_hash->e);
             
             uint32_t temp1 = sha256_hash->h + sum_wk_v + Ch_v + s1_v;
             uint32_t temp2 = s0_v + ma_v;
@@ -103,31 +104,11 @@ void init_w(uint32_t w[64], char* padded_pass, int i){
         w[i] = ntohl(aux_pass[i]);
 
     for(int i = 16; i < 64; i++){
-        uint32_t s0 = r_rot(w[i -15],7) ^ r_rot(w[i - 15], 18) ^ (w[i - 15] >> 3);
-        uint32_t s1 = r_rot(w[i -2],17) ^ r_rot(w[i - 2], 19) ^ (w[i - 2] >> 10);
+        uint32_t s0 = R_ROT(w[i -15],7) ^ R_ROT(w[i - 15], 18) ^ (w[i - 15] >> 3);
+        uint32_t s1 = R_ROT(w[i -2],17) ^ R_ROT(w[i - 2], 19) ^ (w[i - 2] >> 10);
         w[i] = w[i - 16] + s0 + w[i - 7] + s1;
     }
 
-}
-
-uint32_t Ch(uint32_t e, uint32_t f, uint32_t g){
-   return ( e & f ) ^ ( (~e) & g );
-}
-
-uint32_t s0(uint32_t a){
-    return r_rot(a, 2) ^ r_rot(a, 13) ^ r_rot(a, 22);
-}
-
-uint32_t s1(uint32_t e){
-    return r_rot(e, 6) ^ r_rot(e, 11) ^ r_rot(e, 25);
-}
-
-uint32_t ma(uint32_t a, uint32_t b, uint32_t c){
-    return (a & b) ^ (a & c) ^ (b & c); 
-}
-
-uint32_t r_rot(uint32_t reg,uint8_t rot){
-    return (reg << (sizeof(uint32_t) * 8 - rot)) | (reg >> rot);  
 }
 
 void sum_h_prev_h(h_state *sha256_hash, h_state *sha256_prev){

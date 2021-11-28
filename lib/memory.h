@@ -2,6 +2,7 @@
 #define MEMORY_H
 
 #include <math.h>
+#include <time.h>
 #include "general_definitions.h"
 #include "list.h"
 
@@ -14,9 +15,19 @@ typedef struct pool_node
     char id[50];
     void* data;
     void* pool_chunks;
+    LIST monitor;
     unsigned int size;
     unsigned int reserved;
 }pool_node;
+
+typedef struct monitor_node
+{
+    char* FILE;
+    int LINE;
+    void* ptr_id;
+    clock_t time;
+}monitor_node;
+
 
 void* init_memory(char* id, size_t size);
 
@@ -26,6 +37,12 @@ void cfree(void* ptr, char* id);
 
 void print_mem(char* id);
 
+void* monitor_cmalloc(size_t size, char* id, char* FILE, int LINE);
+
+void monitor_cfree(void* ptr, char* id);
+
 unsigned int total_mem(void);
+
+void monitor_print(char *id);
 
 #endif
