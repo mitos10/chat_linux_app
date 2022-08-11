@@ -1,12 +1,17 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
+/** INCLUDES **/
+
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <stdint.h>
+#include <poll.h>
 #include "general_definitions.h"
 #include "list.h"
 
+/** DEFINES **/
 
 #define QUEUE LIST
 #define DICTIONARY LIST
@@ -14,19 +19,41 @@
 #define QUEUE_MAX_SIZE 100
 #define HEADER_SIZE 4
 #define LAST_SYMBOL_SIZE 4
-#define MAX_PACKAGE_SIZE 4 + 4096 + 4
+#define PAYLOAD_SIZE 4096
+#define MAX_PACKAGE_SIZE (HEADER_SIZE + PAYLOAD_SIZE + LAST_SYMBOL_SIZE)
 
-enum { SOCKET_CREATION_FAIL = 0, SOCKET_CONNECTION_FAIL = 1, SUCCESS = 2} SOCKET_ADD_RESP;
+#define MAX_SOCKETS_OPEN 50
 
-enum { TCP = 0, UDP =1};
+/** MACROS **/
+
+/** ENUMERATIONS **/
+
+typedef enum { SOCKET_CREATION_FAIL = 0, SOCKET_CONNECTION_FAIL = 1, SUCCESS = 2} SOCKET_ADD_RESP;
+typedef enum { TCP = 0, UDP = 1} SOCKET_TYPE;
+
+/** STRUCTS **/
 
 typedef struct pack_node {
-	unsigned int id : 30;
-	unsigned int status : 2;
+	uint32_t id : 30;
+	uint32_t status : 2;
 	char *user;
 	void *data;
-	unsigned int size;
+	uint32_t size;
 } pack_node;
+
+typedef struct dict_node{ 
+	char *user;
+	int32_t fd;
+	SOCKET_TYPE type;
+}dict_node;
+
+typedef struct {
+	struct pollfd sockFD[MAX_SOCKETS_OPEN];
+	int32_t sockFDind;
+	List sndQ;
+	List rcvQ;
+	List userFDdict;
+}UserSockHandler;
 
 /*
 
@@ -40,58 +67,115 @@ PACKAGE FORMAT:
 
 */
 
-/*
--Func definition:
- Inits main socket and listening thread
--Params:
- None
--Return:
- None
-*/
-void init_sockets();
+/** GLOBAL FUNCTIONS **/
 
-/*
--Func definition:
- Adds socket to dictionary entry
--Params:
- sockaddr -> contains ip and port
- user -> string with user name
--Return: 
- enum SOCKET_ADD_RESP
- 
-*/
-int add_socket(struct sockaddr_in *sockaddr, char *user, int type);
+/**
+ * @brief Inits main socket and listening thread
+ * 
+ */
+void sockInit();
 
-/*
--Func definition:
- Write to send queue
--Params:
- data -> pointer to send data (pack_node type)
--Return:
- id value of package
- -1 on error
-*/
-int write_queue(pack_node* data);
+/**
+ * @brief Adds socket to dictionary entry
+ * 
+ * @param sockaddr contains ip and port
+ * @param user string with user name
+ * @param type 
+ * @return int enum SOCKET_ADD_RESP
+ */
+SOCKET_ADD_RESP socketAdd(struct sockaddr_in *sockaddr, char *user, SOCKET_TYPE type);
 
-/*
--Func definition:
- Read to send queue
--Params:
- data -> pointer to send data (pack_node type)
--Return:
- Size read
- < = 0 on error
-*/
-pack_node* read_queue(void);
+/**
+ * @brief Write to send queue
+ * 
+ * @param data pointer to send data (pack_node type)
+ * @return int id value of package, -1 on error
+ */
 
-/*
--Func definition:
- Search if package with id is sent
--Params:
- id -> package id searched
--Return:
- TRUE or FALSE
-*/
-int package_is_sent(int id);
+int32_t sockWriteQ(pack_node* data);
+
+/**
+ * @brief Read to send queue
+ * 
+ * @return pack_node*
+ */
+
+void sockReadQ(pack_node *data);
+
+/**
+ * @brief Search if package with id is sent
+ * 
+ * @param id package id searched
+ * @return int TRUE/FALSE
+ */
+
+uint8_t sockIsPckgSent(int32_t id);
+
+/** END GLOBAL FUNCTIONS **/
+
+///////////////////////////////////////////////////////////////////////////
+
+/** LOCAL FUNCTIONS **/
+
+static void* _connectionThread(void * param);
+
+/**
+ * @brief Compare user node on dictionary user - file descriptor
+ * 
+ * @param s_data string with username
+ * @param data dictionary node
+ * @return unsigned TRUE/FALSE
+ */
+
+static uint8_t _cmp_username(void* s_data, void* data);
+
+/**
+ * @brief Compare pack id on queue
+ * 
+ * @param s_data ptr to id number
+ * @param data queue node
+ * @return unsigned TRUE/FALSE
+ */
+
+static uint8_t _cmp_id(void* s_data, void* data);
+
+/**
+ * @brief Compare user node on dictionary file descriptor - user
+ * 
+ * @param s_data pointer with file descriptor
+ * @param data dictionary node
+ * @return unsigned TRUE/FALSE
+ */
+
+static uint8_t _cmp_fd(void* s_data, void* data);
+
+/**
+ * @brief Internal function to send package from queue
+ * 
+ * @return int 
+ */
+
+static int32_t _sendPackage();
+
+/**
+ * @brief Internal function to receive package to queue
+ * 
+ * @param fd file descriptor
+ * @return int size received
+ */
+
+static int32_t _recvPackage(int32_t fd);
+
+/**
+ * @brief Print queue to file
+ * 
+ * @param f File pointer
+ * @param nd data
+ */
+
+static void _print_queue(FILE*f, void* nd);
+
+
+/** END LOCAl FUNCTIONS **/
 
 #endif

@@ -9,11 +9,10 @@ char* generate_iv(int size){
 }
 
 void enc_file(struct file_crypt *data){
-    data->pass = "known_pass";
     char* buff = malloc(data->size * sizeof(char));
     char *iv = generate_iv(data->iv_sz);
     memcpy(buff, data->buff, data->size);
-    printf("PASS %s, TEXT %s, SIZE %d, SIZE_IV %d\n",data->pass, data->buff, data->size, data->iv_sz);
+    //printf("PASS %s, TEXT %s, SIZE %d, SIZE_IV %d\n",data->pass, data->buff, data->size, data->iv_sz);
     fflush(stdout);
     aes_encrypt(data->pass, buff, data->size, &(data->buff), AES_128, iv);
     for(int i = 0; i < data->iv_sz; i++)
@@ -24,7 +23,6 @@ void enc_file(struct file_crypt *data){
 }
 
 void dec_file(struct file_crypt *data){
-    data->pass = "known_pass";
     if(data->size == 0){
         fseek(data->file,0L, SEEK_END);
         data->size = ftell(data->file) - data->iv_sz;
@@ -37,6 +35,6 @@ void dec_file(struct file_crypt *data){
         iv[i] = getc(data->file);
     for(int i = 0; i < data->size; i++ )
         buff[i] = getc(data->file);
-    printf("DATA SIZE %d\n",data->size);
+    //printf("DATA SIZE %d\n",data->size);
     aes_decrypt( data->pass, buff, data->size, &(data->buff), AES_128, iv);
 }
