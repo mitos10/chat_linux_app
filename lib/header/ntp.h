@@ -5,12 +5,17 @@
 #include "general_definitions.h"
 #include "dns.h"
 
-void* init_NTP_serv();
+typedef struct{
+    uint32_t UNIXtime;
+    uint8_t timeUpdated;
+}Time;
 
-void request_NTP_time();
+void* NTPinitServ();
 
-unsigned int get_UNIX_time();
+void NTPrequest();
 
-void _process_NTP_pack(pack_node* NTP_pack);
+unsigned int NTPgetUNIXtime();
+
+void _NTPprocessPack(pack_node* NTP_pack);
 
 #endif

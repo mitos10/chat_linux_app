@@ -1,12 +1,21 @@
 #include "../header/dns.h"
 #include "../header/list.h"
 
-LIST(_DNS_req_list);
+#define CMP_ID 0
+
+List _DNS_req_list = {
+    .root = NULL,
+    .size = 0,
+    .cmpData = {[CMP_ID] = _cmp_id, NULL},
+    .printNode = NULL,
+    .deleteNode = NULL,
+    .sortNode = {NULL},
+};
 
 typedef struct DNS_req_node{
     uint16_t ID;
-    unsigned int pack_size;
-    char* IP;
+    uint16_t pack_size;
+    uint8_t* IP;
 } DNS_req_node;
 
 typedef struct __attribute__((__packed__)){
@@ -18,26 +27,31 @@ typedef struct __attribute__((__packed__)){
     uint16_t arcount;
 }dns_header;
 
-char* _DNS_parse_hn(char *host_name);
-static unsigned int _cmp_id(void* s_data, void* data);
+const char* serverList[] = {
+    "8.8.8.8",
+    "8.8.4.4",
+    "1.1.1.1",
+    "1.0.0.1",
+    "9.9.9.9",
+};
 
-void init_DNS_serv(){
-    struct sockaddr_in aux;
-    aux.sin_family = AF_INET;
-    aux.sin_addr.s_addr = inet_addr("8.8.8.8");
-    aux.sin_port = htons(53);
-    add_socket(&aux, "DNS", UDP);
+void DNSinitServ(){
+    struct sockaddr_in aux = {
+        .sin_addr = {.s_addr = inet_addr(serverList[0])},
+        .sin_family = AF_INET,
+        .sin_port = htons(53), 
+    };
+
+    for(uint16_t i = 1; SUCCESS != (&aux, "DNS", UDP) && i < sizeof(serverList); i++)
+        aux.sin_addr.s_addr = inet_addr(serverList[i]);
 }
 
-char* get_IP(uint16_t ID){
-    unsigned int pos;
-    find_node(&_DNS_req_list,&pos,_cmp_id,&ID);
-    NODE *aux = get_node(&_DNS_req_list,pos);
-    return aux != NULL ? ((DNS_req_node*)aux->data)->IP : NULL;
+uint8_t* DNSgetIP(uint16_t ID){
+    DNS_req_node* data = listFind(&_DNS_req_list, NULL, &ID, 0);
+    return NULL != data ? data->IP : NULL;
 }
 
-uint16_t DNS_request(char *host_name){
-    
+uint16_t DNSrequest(uint8_t *host_name){
     srand(time(NULL));
     dns_header header ={
         .ID = rand() % __UINT16_MAX__,
@@ -48,44 +62,44 @@ uint16_t DNS_request(char *host_name){
         .arcount = 0x0000
     };
 
-    char footer[]= {0x00,0x01,0x00,0x01};
+    uint8_t *question = _DNSparseHn(host_name);
 
-    char *question = _DNS_parse_hn(host_name);
+    uint8_t footer[]= {0x00,0x01,0x00,0x01};
 
-    char *data_packet = calloc( sizeof(header) + strlen(question) + 1 + sizeof(footer), sizeof(char));
+    uint16_t data_packet_sz = sizeof(header) + strlen(question) + 1 + sizeof(footer);
+    uint8_t *data_packet = calloc( data_packet_sz, sizeof(uint8_t));
 
-    memcpy(data_packet, &header, sizeof(header));
-    memcpy(data_packet+sizeof(header), question, strlen(question)+1);
-    memcpy(data_packet+sizeof(header)+strlen(question)+1, footer, sizeof(footer));
-    pack_node* dns_pack = (pack_node*)malloc(sizeof(pack_node));
-    dns_pack->user = malloc(50);
-    sprintf(dns_pack->user,"DNS");
-    dns_pack->data = data_packet;
-    dns_pack->size = sizeof(header) + strlen(question) + 1 + sizeof(footer);
-    write_queue(dns_pack);
-    printf("DNS packet:\n");
-    for(int i = 0; i < (sizeof(header) + strlen(question) + 1 + sizeof(footer)); i++){
-        printf("%.2hhX ", data_packet[i]);
-    }
-    printf("\n");
+    uint32_t offset = 0;
+    memcpy(data_packet + offset,    &header,    offset += sizeof(header));
+    memcpy(data_packet + offset,    question,   offset += strlen(question)+1);
+    memcpy(data_packet + offset,    footer,     offset += sizeof(footer));
 
-    printf("SIZE HEADER %ld %ld\n",sizeof(header), sizeof(footer));
-    fflush(stdout);
+    pack_node dns_pack = {
+        .data = data_packet,
+        .size = offset,
+        .user = NULL,
+    };
+    sprintf(dns_pack.user = malloc(50 * sizeof(uint8_t)), "DNS");
+    
+    sockWriteQ(&dns_pack);
 
-    DNS_req_node* req_node = (DNS_req_node*) malloc(sizeof(DNS_req_node));
-    req_node->ID = header.ID;
-    req_node->IP = NULL;
-    req_node->pack_size = sizeof(header) + strlen(question) + 1 + sizeof(footer);
-    insert_node(&_DNS_req_list,create_node (req_node),LAST_NODE);
+    DNS_req_node req_node = {
+        .ID = header.ID,
+        .IP = NULL,
+        .pack_size = sizeof(header) + strlen(question) + 1 + sizeof(footer),
+    };
+    listInsert(&_DNS_req_list, &req_node, sizeof(DNS_req_node), LAST_POS);
+
     return header.ID;
 }
 
-char* _DNS_parse_hn(char *host_name){
+uint8_t* _DNSparseHn(uint8_t *host_name){
     
-    char *token, *str;
-    char *buffer_hn = (char*) malloc(strlen(host_name)), *buffer_out= (char*)calloc(strlen(host_name), sizeof(char));
+    uint8_t *token, *str;
+    uint8_t *buffer_hn = malloc(strlen(host_name));
+    uint8_t *buffer_out = calloc(strlen(host_name), sizeof(uint8_t));
+
     strcpy(buffer_hn,host_name);
-    
     for( str = buffer_hn; ; str = NULL) {
         token = strtok(str, ".");
         if(token != NULL){
@@ -95,31 +109,25 @@ char* _DNS_parse_hn(char *host_name){
         }
         else break;
     }
-    #ifdef DEBUG
-    for(int i = 0; buffer_out[i] != '\0'; i++)
-        printf("%.2X ",buffer_out[i]);
-    printf("%.2X\n",'\0');
-    printf("OUTPUT BUFFER \"%s\"\n",buffer_out);
-    #endif
+    
     free(buffer_hn);
     return buffer_out;
 }
 
-void _process_dns_packet(pack_node *DNS_pack){
+void _DNSprocessPacket(pack_node *DNS_pack){
 
-    uint16_t ID = *((uint16_t*)DNS_pack->data);
-    unsigned int pos;
-    find_node(&_DNS_req_list,&pos,_cmp_id,&ID);
-    NODE* aux = get_node(&_DNS_req_list,pos);
-    unsigned int pack_size = ((DNS_req_node*)aux->data)->pack_size;
-
-    if(  (((char*)DNS_pack->data)[pack_size] & 0xFF) == 0xC0 && (((char*)DNS_pack->data)[pack_size+1] & 0xFF) == 0x0C ){
-        ((DNS_req_node*)aux->data)->IP = (char*) calloc(200, sizeof(char));
-        sprintf( ((DNS_req_node*)aux->data)->IP,"%d.%d.%d.%d",  (unsigned int)((char*)DNS_pack->data)[ pack_size + 12] &0xFF, (unsigned int)((char*)DNS_pack->data)[ pack_size + 13] &0xFF, 
-                                                                (unsigned int)((char*)DNS_pack->data)[ pack_size + 14] &0xFF, (unsigned int)((char*)DNS_pack->data)[ pack_size + 15] &0xFF);
+    uint16_t* ID_ptr = DNS_pack->data;
+    uint8_t* pack_ptr = DNS_pack->data;
+    DNS_req_node* data = listFind(&_DNS_req_list, NULL, ID_ptr, CMP_ID);
+    
+    uint16_t pack_size = data->pack_size;
+    if( pack_ptr[pack_size] == 0xC0 && pack_ptr[pack_size+1] == 0x0C ){
+        data->IP = (uint8_t*) calloc(10, sizeof(uint8_t));
+        sprintf( data->IP,"%d.%d.%d.%d",pack_ptr[ pack_size + 12], pack_ptr[ pack_size + 13], 
+                                        pack_ptr[ pack_size + 14], pack_ptr[ pack_size + 15]);
     }
 }
 
-static unsigned int _cmp_id(void* s_data, void* data){
-    return ((DNS_req_node*)data)->ID == *(uint16_t*)data;
+static int16_t _cmp_id(void* s_data, void* data){
+    return !((DNS_req_node*)data)->ID == *(uint16_t*)data;
 }

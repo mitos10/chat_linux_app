@@ -83,7 +83,7 @@ void sockInit();
  * @param type 
  * @return int enum SOCKET_ADD_RESP
  */
-SOCKET_ADD_RESP socketAdd(struct sockaddr_in *sockaddr, char *user, SOCKET_TYPE type);
+SOCKET_ADD_RESP sockAdd(struct sockaddr_in *sockaddr, char *user, SOCKET_TYPE type);
 
 /**
  * @brief Write to send queue
@@ -127,7 +127,7 @@ static void* _connectionThread(void * param);
  * @return unsigned TRUE/FALSE
  */
 
-static uint8_t _cmp_username(void* s_data, void* data);
+static int16_t _cmp_username(void* s_data, void* data);
 
 /**
  * @brief Compare pack id on queue
@@ -137,7 +137,7 @@ static uint8_t _cmp_username(void* s_data, void* data);
  * @return unsigned TRUE/FALSE
  */
 
-static uint8_t _cmp_id(void* s_data, void* data);
+static int16_t _cmp_id(void* s_data, void* data);
 
 /**
  * @brief Compare user node on dictionary file descriptor - user
@@ -147,7 +147,7 @@ static uint8_t _cmp_id(void* s_data, void* data);
  * @return unsigned TRUE/FALSE
  */
 
-static uint8_t _cmp_fd(void* s_data, void* data);
+static int16_t _cmp_fd(void* s_data, void* data);
 
 /**
  * @brief Internal function to send package from queue
@@ -175,6 +175,7 @@ static int32_t _recvPackage(int32_t fd);
 
 static void _print_queue(FILE*f, void* nd);
 
+static void _delete_queue(void* data);
 
 /** END LOCAl FUNCTIONS **/
 

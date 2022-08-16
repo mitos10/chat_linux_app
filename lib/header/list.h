@@ -1,13 +1,19 @@
 #ifndef LIST_H
 #define LIST_H
 
+/** INCLUDES **/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 
+/** DEFINES **/
+
 #define LAST_NODE -1
 #define LAST_POS -1
+
+/** STRUCTURES **/
 
 struct node;
 
@@ -34,8 +40,7 @@ struct list{
 
 };
 
-
-#define LIST(x) LIST x = NULL;
+/** GLOBAL FUNCTONS **/
 
 /**
  * @brief Insert element list

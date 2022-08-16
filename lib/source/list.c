@@ -5,8 +5,7 @@ void listInsert(List* l, void* const data, size_t const size, int16_t const pos)
 
 	//Reserving Memory
 	NODE* nd = malloc(sizeof(NODE));
-	nd->data = malloc(size);
-	memcpy(nd->data, data, size);
+	nd->data = memcpy(malloc(size), data, size);
 	nd->next_ptr = NULL;
 
 	//Checking if last node
@@ -50,10 +49,22 @@ void listMove(List* l, uint16_t const pos_dest, uint16_t const pos_src){
 }
 
 void listSwap(List* l, uint16_t const fst_pos, uint16_t const snd_pos){
-	listMove(l, snd_pos, fst_pos);
-	if(fst_pos < snd_pos)
-		listMove(l, fst_pos, snd_pos - 1);
-	else listMove(l, fst_pos, snd_pos + 1);
+	uint16_t i= 0, is_fst_found = 0, is_snd_found = 0;
+	LIST it_fst_pos = NULL, it_snd_pos = NULL;
+	if(fst_pos != snd_pos)
+		for(LIST it = l->root; it != NULL && !(is_fst_found && is_snd_found); it = it->next_ptr, i++){
+			if(i == fst_pos){
+				is_fst_found = 1;
+				it_fst_pos = it;
+			}
+			if(i == snd_pos){
+				is_snd_found = 1;
+				it_snd_pos = it;
+			}
+		}
+	void* aux = it_fst_pos->data;
+	it_fst_pos->data = it_snd_pos->data;
+	it_snd_pos->data = aux;
 }
 
 void* listGetData(List* l, int16_t const pos){
@@ -133,11 +144,10 @@ void listPrint(List* l, FILE* f){
 void* listFind(List* l, uint16_t* pos, void* const s_data, uint16_t func){
 
 	if(l->root != NULL){
-
 		//Iterating through list
 		uint16_t i = 0;
 		for(LIST it = l->root; it != NULL; it = it->next_ptr, i++)
-			if((*l->cmpData[func])(s_data, it->data)){
+			if(!(*l->cmpData[func])(s_data, it->data)){
 				if(pos!=NULL) *pos = i;
 				return it->data;
 			}

@@ -42,56 +42,33 @@ void sockInit(){
 }
 
 SOCKET_ADD_RESP sockAdd(struct sockaddr_in *sockaddr, char *user, SOCKET_TYPE type){
-	int32_t sockfd;
-	sockfd = socket(AF_INET, type == TCP? SOCK_STREAM : SOCK_DGRAM, 0);
+	int32_t sockfd = socket(AF_INET, type == TCP? SOCK_STREAM : SOCK_DGRAM, 0);
 
-    if (sockfd == -1) {
-		#ifdef DEBUG
-			printf("SOCKET_CREATION_FAIL\n");
-		#endif
+    if (sockfd == -1) 
         return SOCKET_CREATION_FAIL;
-    }
 
-    if (connect(sockfd, (struct sockaddr*)sockaddr, sizeof(*sockaddr)) != 0){
-		#ifdef DEBUG
-			printf("SOCKET_CONNECTION_FAIL\n");
-		#endif
+    if (connect(sockfd, (struct sockaddr*)sockaddr, sizeof(*sockaddr)) != 0)
         return SOCKET_CONNECTION_FAIL;
-	}
 
-    dict_node *dict_sock = (dict_node*) malloc(sizeof(dict_node));
-	
 	_UsrSck_h.sockFD[_UsrSck_h.sockFDind].fd = sockfd;
 	_UsrSck_h.sockFD[_UsrSck_h.sockFDind].events = POLLIN | POLLOUT;
 	_UsrSck_h.sockFDind++;
 
-    dict_sock->fd = sockfd;
-	#ifdef DEBUG
-		printf("SOCK ID %d\n",sockfd);
-	#endif
-    dict_sock->user = (char*) malloc(strlen(user));
-	dict_sock->type = type;
-    strcpy(dict_sock->user, user);
+    dict_node dict_sock = {
+		.fd = sockfd,
+		.type = type,
+		.user = strcpy((uint8_t*)malloc(strlen(user)), user),
+	};
 
-    insert_node(&(_UsrSck_h.userFDdict), create_node(dict_sock), LAST_NODE);
+	listInsert(&(_UsrSck_h.userFDdict),&dict_sock,sizeof(dict_node), LAST_POS);
 
     return SUCCESS;	
 }
 
 int32_t sockWriteQ(pack_node *data){
 	dict_node* user = listFind(&_UsrSck_h.userFDdict, NULL, data->user, CMP_USERNAME);
-	if( NULL != user ){
-		#ifdef DEBUG
-			printf("USER: %s\n",data->user);
-		#endif
+	if( NULL != user )
 		listInsert(&_UsrSck_h.sndQ, data, sizeof(data), LAST_NODE);
-	}else printf("USER NOT FOUND: %s\n",data->user);
-
-	#ifdef DEBUG
-	printf("QUEUE PRINT OUT:\n");
-	listPrint(&_UsrSck_h.sndQ, stdout);
-	#endif	
-	
 	return 1;
 }	
 
@@ -133,13 +110,6 @@ static int32_t _sendPackage(){
 			memcpy(pack_buffer, &fst_nd_q.size, sizeof(uint32_t)); 								//Header
 			memcpy(pack_buffer + HEADER_SIZE, fst_nd_q.data, fst_nd_q.size); 					//Payload
 			memcpy(pack_buffer + HEADER_SIZE + fst_nd_q.size, end_symbol, sizeof(end_symbol)); 	//End symbol
-		
-			#ifdef DEBUG
-				printf("Packet: ");
-				for(int i = 0; i < fst_nd_q.size + 4 + 4; i++)
-					printf("%c",pack_buffer[i]);
-				printf("\n");
-			#endif
 
 			return send(user_dict->fd, pack_buffer, sizeof(pack_buffer), 0);
 		} 	else return send(user_dict->fd, fst_nd_q.data, fst_nd_q.size, 0);
@@ -161,11 +131,6 @@ static int32_t _recvPackage(int32_t fd){
 		strcpy(pack_aux.user, user_name);
 
 		listInsert(&_UsrSck_h.rcvQ, &pack_aux, sizeof(pack_node),LAST_POS);
-
-		#ifdef DEBUG
-			printf("QUEUE PRINT IN:\n");
-			listPrint(&_UsrSck_h.rcvQ, stdout);
-		#endif
 	}
 	return size;
 }
@@ -174,17 +139,17 @@ static void _delete_queue(void* data){
 	free(data);
 }
 
-static uint8_t _cmp_username(void* s_data, void* data){
+static int16_t _cmp_username(void* s_data, void* data){
 	dict_node *aux = (dict_node*) data;
 	return !strcmp(aux->user,s_data);
 }
 
-static uint8_t _cmp_fd(void* s_data, void* data){
+static int16_t _cmp_fd(void* s_data, void* data){
 	dict_node *aux = (dict_node*) data;
 	return aux->fd == *(uint32_t*)s_data;
 }
 
-static uint8_t _cmp_id(void* s_data, void* data){
+static int16_t _cmp_id(void* s_data, void* data){
 	pack_node *aux = (pack_node*) data;
 	return aux->id == *(uint32_t*)s_data;
 }
