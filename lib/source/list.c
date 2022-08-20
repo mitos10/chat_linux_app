@@ -1,5 +1,9 @@
 #include "../header/list.h"
 
+#ifdef MEMORY
+	#include "../header/memory.h"
+#endif
+
 
 void listInsert(List* l, void* const data, size_t const size, int16_t const pos){
 
@@ -23,6 +27,25 @@ void listInsert(List* l, void* const data, size_t const size, int16_t const pos)
 		l->size++;
 	}
 	
+}
+
+void listInsertRsvd(List* l, NODE* nd, int16_t const pos){
+
+	//Checking if last node
+	uint16_t is_last_node = (pos == LAST_NODE);
+
+	//Iterating through list
+	LIST* aux_root = &l->root;
+	int16_t i=0;
+	for( ; (*aux_root)!=NULL && i < (uint16_t)pos; aux_root = & ((*aux_root)->next_ptr), i++);
+	
+	//Saving data into node
+	if( i == pos || is_last_node){
+		nd->next_ptr = (*aux_root);
+		(*aux_root) = nd;
+		l->size++;
+	}
+
 }
 
 void listMove(List* l, uint16_t const pos_dest, uint16_t const pos_src){
@@ -121,6 +144,37 @@ void listDelete(List* l, int16_t const pos){
 		free(nd);
 		l->size--;
 	}
+}
+
+NODE* listDeleteRsvd(List* l, int16_t const pos){
+
+	NODE* nd = NULL;
+
+	//Checking if last node
+	uint16_t is_last_node = (pos == LAST_POS);
+
+	if(l->root != NULL){
+
+		LIST* aux_root = & l->root;
+		LIST* prev_node = aux_root;
+		aux_root =  & ((*aux_root)->next_ptr);
+
+		//Iterating through lists
+		uint16_t i;
+		for(i=0; (*aux_root)!=NULL && i < (uint16_t)pos ; aux_root = & ((*aux_root)->next_ptr), i++)
+			prev_node = aux_root;
+
+		//Selecting node
+		NODE* aux =  *prev_node;
+		if(is_last_node ||  i == pos){
+			*prev_node = (*aux_root);
+			nd = aux;
+		}else nd = NULL;
+
+	}else nd = l->root;
+
+	//Delete node
+	return nd;
 }
 
 void listDeleteAll(List* l){

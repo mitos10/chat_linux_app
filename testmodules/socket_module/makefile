@@ -1,2 +1,2 @@
 all:
-	gcc -o client socket_test.h socket_test.c ../../lib/socket.h ../../lib/socket.c ../../lib/list.h ../../lib/list.c ../../lib/ntp.h ../../lib/ntp.c ../../lib/dns.h ../../lib/dns.c ../../lib/packet_manager.h -lpthread
+	gcc -o socket_test socket_test.h socket_test.c ../../lib/header/socket.h ../../lib/source/socket.c ../../lib/header/list.h ../../lib/source/list.c ../../lib/header/ntp.h ../../lib/source/ntp.c ../../lib/header/dns.h ../../lib/source/dns.c ../../lib/header/general_definitions.h ../../lib/header/memory.h ../../lib/source/memory.c -lpthread -lm -g

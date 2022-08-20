@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include "general_definitions.h"
 
 /** DEFINES **/
 
@@ -53,6 +54,15 @@ struct list{
 void listInsert(List* l, void* const data, size_t const size, int16_t const pos);
 
 /**
+ * @brief Insert element list (Previously reserved node)
+ * 
+ * @param l list structure
+ * @param nd reserved node
+ * @param pos position to save
+ */
+void listInsertRsvd(List* l, NODE* nd, int16_t const pos);
+
+/**
  * @brief Moves node in list from src position to dest position
  * 
  * @param l list structure
@@ -86,6 +96,15 @@ void* listGetData(List* l, int16_t const pos);
  * @param pos position to delete
  */
 void listDelete(List* l, int16_t const pos);
+
+/**
+ * @brief 
+ * 
+ * @param l 
+ * @param pos 
+ * @return NODE* 
+ */
+NODE* listDeleteRsvd(List* l, int16_t const pos);
 
 /**
  * @brief Delete all elements fron list

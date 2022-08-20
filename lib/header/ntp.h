@@ -5,16 +5,23 @@
 #include "general_definitions.h"
 #include "dns.h"
 
+#ifdef MEMORY
+    #include "memory.h"
+#endif
+
 typedef struct{
+    uint32_t userTime;
     uint32_t UNIXtime;
-    uint8_t timeUpdated;
+    uint8_t isTimeUpdated;
 }Time;
 
 void* NTPinitServ();
 
 void NTPrequest();
 
-unsigned int NTPgetUNIXtime();
+uint32_t NTPgetUNIXtime();
+
+uint8_t NTPisTimeUpdated();
 
 void _NTPprocessPack(pack_node* NTP_pack);
 

@@ -11,6 +11,10 @@
 #include "general_definitions.h"
 #include "list.h"
 
+#ifdef MEMORY
+	#include "memory.h"
+#endif
+
 /** DEFINES **/
 
 #define QUEUE LIST
@@ -100,7 +104,7 @@ int32_t sockWriteQ(pack_node* data);
  * @return pack_node*
  */
 
-void sockReadQ(pack_node *data);
+pack_node* sockReadQ(pack_node *data);
 
 /**
  * @brief Search if package with id is sent
@@ -176,6 +180,8 @@ static int32_t _recvPackage(int32_t fd);
 static void _print_queue(FILE*f, void* nd);
 
 static void _delete_queue(void* data);
+
+static void _print_dict(FILE*f, void* nd);
 
 /** END LOCAl FUNCTIONS **/
 

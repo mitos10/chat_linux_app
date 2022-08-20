@@ -5,8 +5,13 @@
 #include <string.h>
 #include "general_definitions.h"
 #include "socket.h"
+#include "list.h"
 #include <stdlib.h>
 #include <time.h>
+
+#ifdef MEMORY
+    #include "memory.h"
+#endif
 
 //https://www.binarytides.com/dns-query-code-in-c-with-winsock/
 //https://electronicspost.com/dns-messages/
@@ -59,5 +64,14 @@ void _DNSprocessPacket(pack_node *DNS_pack);
  * @return int16_t 
  */
 static int16_t _cmp_id(void* s_data, void* data);
+
+/**
+ * @brief 
+ * 
+ * @param s_data 
+ * @param data 
+ * @return int16_t 
+ */
+static int16_t _cmp_host_name(void* s_data, void* data);
 
 #endif

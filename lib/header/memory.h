@@ -15,11 +15,13 @@
 #define METADATA_SIZE 2
 #define HIGHEST_BIT 0x80
 #define REG_BITS 8
+#define DEFAULT_POOL "Default Pool"
 
-#define malloc(SIZE) memMonCmalloc(SIZE, "Main Memory", __FILE__, __LINE__)
-#define calloc(SIZE, T_SIZE) memMonCmalloc(SIZE * T_SIZE, "Main Memory", __FILE__, __LINE__)
-#define free(PTR) memMonCfree(PTR, "Main Memory")
+/**MACROS**/
 
+#define malloc(SIZE)            memMonCmalloc(SIZE, DEFAULT_POOL, __FILE__, __LINE__)
+#define calloc(SIZE, T_SIZE)    memMonCmalloc(SIZE * T_SIZE, DEFAULT_POOL, __FILE__, __LINE__)
+#define free(PTR)               memMonCfree(PTR, DEFAULT_POOL, __FILE__, __LINE__)
 
 /*
 
@@ -68,6 +70,22 @@ K | K | K |                                        K
 
 /** STRUCTURES **/
 
+typedef struct Monitor
+{
+    uint16_t sizeAllocated;
+    uint16_t sizeEffective;
+    List trace;
+}Monitor;
+
+typedef struct traceNode
+{
+    char* FILE;
+    uint16_t LINE;
+    void* ptr_id;
+    clock_t time;
+    size_t size;
+}traceNode;
+
 typedef struct poolNode
 {
     char id[50];
@@ -77,19 +95,20 @@ typedef struct poolNode
     uint8_t* data;
     uint8_t* chunkReg;
 
-    List monitor;
+    Monitor monHandler;
+    FILE* file;
 
 }poolNode;
 
-typedef struct monitorNode
-{
-    char* FILE;
-    uint16_t LINE;
-    void* ptr_id;
-    clock_t time;
-}monitorNode;
-
 /** GLOBAL FUNCTIONS **/
+
+/**
+ * @brief Initializes Main memory pool with size
+ * 
+ * @param size amount of reserved memory for the main pool
+ * @return void* 
+ */
+void* memDefaultInit(size_t size);
 
 /**
  * @brief Initializes a memory pool with an id and size
@@ -98,7 +117,7 @@ typedef struct monitorNode
  * @param size amount of reserved memory for the pool
  * @return void* 
  */
-void* memInit(char* id, size_t size);
+void* memInit(char* id, size_t size, char* traceFileRoute);
 
 /**
  * @brief Custom malloc call
@@ -133,15 +152,17 @@ void memPrint(char* id);
  * @param LINE where the call is made
  * @return void* pointer to start of allocated space
  */
-void* memMonCmalloc(size_t size, char* id, char* FILE, int LINE);
+void* memMonCmalloc(size_t size, char* id, char* FILE, uint16_t LINE);
 
 /**
  * @brief Wrapper for cfree function including extra-information
  * 
  * @param ptr pointer to start address
  * @param id pool identifier
+ * @param FILE where the call is made
+ * @param LINE where the call is made
  */
-void memMonCfree(void* ptr, char* id);
+void memMonCfree(void* ptr, char* id, char* FILE, uint16_t LINE);
 
 /**
  * @brief Prints memory pool with extra-info
@@ -152,9 +173,9 @@ void memMonPrint(char *id);
 
 /** LOCAL FUNCTIONS **/
 
-int16_t _cmp_id(void* s_data, void* data);
-int16_t _cmp_id_ptr(void* s_data, void* data);
-void _print_node(FILE* f, void* nd);
-void _delete_node(void* data);
+static int16_t _cmp_id(void* s_data, void* data);
+static int16_t _cmp_id_ptr(void* s_data, void* data);
+static void _print_node(FILE* f, void* nd);
+static void _delete_node(void* data);
 
 #endif

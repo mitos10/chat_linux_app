@@ -31,7 +31,7 @@ UserSockHandler _UsrSck_h = {
 			[CMP_USERNAME] = _cmp_username,
 			[CMP_FD] = _cmp_fd,
 		},
-		.printNode = NULL,
+		.printNode = _print_dict,
 	},
 };
 
@@ -62,19 +62,31 @@ SOCKET_ADD_RESP sockAdd(struct sockaddr_in *sockaddr, char *user, SOCKET_TYPE ty
 
 	listInsert(&(_UsrSck_h.userFDdict),&dict_sock,sizeof(dict_node), LAST_POS);
 
+	listPrint(&_UsrSck_h.userFDdict, stdout);
+
     return SUCCESS;	
 }
 
 int32_t sockWriteQ(pack_node *data){
 	dict_node* user = listFind(&_UsrSck_h.userFDdict, NULL, data->user, CMP_USERNAME);
 	if( NULL != user )
-		listInsert(&_UsrSck_h.sndQ, data, sizeof(data), LAST_NODE);
+		listInsert(&_UsrSck_h.sndQ, data, sizeof(pack_node), LAST_NODE);
+	printf("Send Queue\n");
+	listPrint(&_UsrSck_h.sndQ, stdout);
+	printf("Rcv Queue\n");
+	listPrint(&_UsrSck_h.rcvQ, stdout);
+	fflush(stdout);
 	return 1;
 }	
 
-void sockReadQ(pack_node *data){
-	*data = *(pack_node*)listGetData(&_UsrSck_h.rcvQ, LAST_NODE);
-	listDelete(&_UsrSck_h.rcvQ, LAST_NODE);
+pack_node* sockReadQ(pack_node *data){
+	pack_node* temp = listGetData(&_UsrSck_h.rcvQ, LAST_NODE);
+	if(temp){
+		*data = *temp;
+		listDelete(&_UsrSck_h.rcvQ, LAST_NODE);
+		return temp;
+	}
+	return NULL;
 }
 
 uint8_t sockIsPckgSent(int32_t id){
@@ -98,9 +110,9 @@ static int32_t _sendPackage(){
 	int pos = 0;
 	if(listGetSize(&_UsrSck_h.sndQ)){
 		
-		pack_node fst_nd_q = *(pack_node*)listGetData(&_UsrSck_h.sndQ, 0);
-		listDelete(&_UsrSck_h.sndQ, 0);
+		//listPrint(&_UsrSck_h.sndQ, stdout);
 
+		pack_node fst_nd_q = *(pack_node*)listGetData(&_UsrSck_h.sndQ, 0);
 		dict_node*  user_dict = listFind(&_UsrSck_h.userFDdict, NULL, fst_nd_q.user, CMP_USERNAME);
 
 		if(user_dict->type == TCP){
@@ -110,26 +122,29 @@ static int32_t _sendPackage(){
 			memcpy(pack_buffer, &fst_nd_q.size, sizeof(uint32_t)); 								//Header
 			memcpy(pack_buffer + HEADER_SIZE, fst_nd_q.data, fst_nd_q.size); 					//Payload
 			memcpy(pack_buffer + HEADER_SIZE + fst_nd_q.size, end_symbol, sizeof(end_symbol)); 	//End symbol
+			listDelete(&_UsrSck_h.sndQ, 0);
 
 			return send(user_dict->fd, pack_buffer, sizeof(pack_buffer), 0);
-		} 	else return send(user_dict->fd, fst_nd_q.data, fst_nd_q.size, 0);
+		}else{ 
+			listDelete(&_UsrSck_h.sndQ, 0);
+			return send(user_dict->fd, fst_nd_q.data, fst_nd_q.size, 0);
+		}
 	}
 	return 0;
 }
 
 static int32_t _recvPackage(int32_t fd){
 	char buffer_recv[MAX_PACKAGE_SIZE];
-	unsigned int size = recv(fd,buffer_recv,MAX_PACKAGE_SIZE,0);
+	printf("Rcv Queue\n");
+	listPrint(&_UsrSck_h.rcvQ, stdout);
+	uint16_t size = recv(fd,buffer_recv,MAX_PACKAGE_SIZE,0);
 	if(size > 0){
 		char* user_name = ((dict_node*)listFind(&_UsrSck_h.userFDdict,NULL, &fd, CMP_FD))->user ;
 		pack_node pack_aux = {
-			.data = malloc(size),
+			.data = memcpy(malloc(size), buffer_recv,size),
 			.size = size,
-			.user = malloc(strlen(user_name)),
+			.user = strcpy(malloc(strlen(user_name)), user_name),
 		};
-		memcpy(pack_aux.data,buffer_recv,size);
-		strcpy(pack_aux.user, user_name);
-
 		listInsert(&_UsrSck_h.rcvQ, &pack_aux, sizeof(pack_node),LAST_POS);
 	}
 	return size;
@@ -141,17 +156,17 @@ static void _delete_queue(void* data){
 
 static int16_t _cmp_username(void* s_data, void* data){
 	dict_node *aux = (dict_node*) data;
-	return !strcmp(aux->user,s_data);
+	return strcmp(aux->user,s_data);
 }
 
 static int16_t _cmp_fd(void* s_data, void* data){
 	dict_node *aux = (dict_node*) data;
-	return aux->fd == *(uint32_t*)s_data;
+	return ! (aux->fd == *(uint32_t*)s_data);
 }
 
 static int16_t _cmp_id(void* s_data, void* data){
 	pack_node *aux = (pack_node*) data;
-	return aux->id == *(uint32_t*)s_data;
+	return ! (aux->id == *(uint32_t*)s_data);
 }
 
 static void _print_queue(FILE*f, void* nd){
@@ -160,4 +175,9 @@ static void _print_queue(FILE*f, void* nd){
 	for(int i = 0; i < aux->size; i++)
 		fprintf(f,"%.2hhX",((char*)aux->data)[i]);
 	fprintf(f,"\n");
+}
+
+static void _print_dict(FILE*f, void* nd){
+	dict_node *aux = nd;
+	fprintf(f, "FD : %d, Type : %s, User : %s\n", aux->fd, aux->type?"TCP":"UDP", aux->user);
 }
