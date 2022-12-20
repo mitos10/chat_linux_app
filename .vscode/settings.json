@@ -7,6 +7,9 @@
         "utility": "c",
         "string": "c",
         "atomic": "c",
-        "memory_resource": "c"
+        "memory_resource": "c",
+        "cstdio": "c",
+        "*.tcc": "c",
+        "streambuf": "c"
     }
 }

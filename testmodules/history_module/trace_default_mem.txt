@@ -1,0 +1,369 @@
+Allocated Memory on "Default Pool" (32B/10240B) Space effectively used: 50.00% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+
+Allocated Memory on "Default Pool" (96B/10240B) Space effectively used: 58.33% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+
+Allocated Memory on "Default Pool" (128B/10240B) Space effectively used: 50.00% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+
+Allocated Memory on "Default Pool" (160B/10240B) Space effectively used: 45.62% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+
+Allocated Memory on "Default Pool" (192B/10240B) Space effectively used: 39.06% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+
+Allocated Memory on "Default Pool" (224B/10240B) Space effectively used: 37.50% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (256B/10240B) Space effectively used: 39.06% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+
+Allocated Memory on "Default Pool" (320B/10240B) Space effectively used: 43.75% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+8. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+
+Allocated Memory on "Default Pool" (352B/10240B) Space effectively used: 42.33% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+8. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+9. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+
+Allocated Memory on "Default Pool" (384B/10240B) Space effectively used: 41.41% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+8. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+9. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+10. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+
+Allocated Memory on "Default Pool" (416B/10240B) Space effectively used: 38.94% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+8. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+9. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+10. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+11. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+
+Allocated Memory on "Default Pool" (448B/10240B) Space effectively used: 38.62% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+8. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+9. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+10. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+11. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+12. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (2464B/10240B) Space effectively used: 88.19% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+8. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+9. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+10. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+11. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+12. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+13. Memory calloc at position : 0x55f11538a872       Size: 2000       Time: 1          File: ../../lib/source/history.c Line: 31   
+
+Allocated Memory on "Default Pool" (448B/10240B) Space effectively used: 38.62% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a712       Size: 8          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+8. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+9. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+10. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+11. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+12. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (416B/10240B) Space effectively used: 39.66% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a732       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 142  
+4. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+5. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+6. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+7. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+8. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+9. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+10. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+11. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (384B/10240B) Space effectively used: 40.62% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a752       Size: 2          Time: 1          File: ../../lib/source/history.c Line: 143  
+4. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+5. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+6. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+7. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+8. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+9. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+10. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (352B/10240B) Space effectively used: 43.75% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 144  
+4. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+5. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+6. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+7. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+8. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+9. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (320B/10240B) Space effectively used: 45.31% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a6d2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+4. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+5. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+6. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+7. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+8. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (256B/10240B) Space effectively used: 41.02% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 16         Time: 0          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+3. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+4. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+5. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+6. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+7. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (224B/10240B) Space effectively used: 39.73% :
+1. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a7f2       Size: 9          Time: 1          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (192B/10240B) Space effectively used: 41.67% :
+1. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a812       Size: 10         Time: 1          File: ../../lib/source/history.c Line: 142  
+4. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+5. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (160B/10240B) Space effectively used: 43.75% :
+1. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a832       Size: 3          Time: 1          File: ../../lib/source/history.c Line: 143  
+4. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (128B/10240B) Space effectively used: 52.34% :
+1. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a852       Size: 11         Time: 1          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (96B/10240B) Space effectively used: 58.33% :
+1. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a7b2       Size: 40         Time: 1          File: ../../lib/source/list.c Line: 14   
+
+Allocated Memory on "Default Pool" (32B/10240B) Space effectively used: 50.00% :
+1. Memory calloc at position : 0x55f11538a792       Size: 16         Time: 1          File: ../../lib/source/list.c Line: 12   
+
+Allocated Memory on "Default Pool" (0B/10240B) Space effectively used: 0.00% :
+
+Allocated Memory on "Default Pool" (64B/10240B) Space effectively used: 53.12% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 34         Time: 2          File: ../../lib/source/history.c Line: 110  
+
+Allocated Memory on "Default Pool" (96B/10240B) Space effectively used: 52.08% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 34         Time: 2          File: ../../lib/source/history.c Line: 110  
+2. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+
+Allocated Memory on "Default Pool" (160B/10240B) Space effectively used: 56.25% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 34         Time: 2          File: ../../lib/source/history.c Line: 110  
+2. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+3. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+
+Allocated Memory on "Default Pool" (192B/10240B) Space effectively used: 51.04% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 34         Time: 2          File: ../../lib/source/history.c Line: 110  
+2. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+3. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+4. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+
+Allocated Memory on "Default Pool" (224B/10240B) Space effectively used: 47.77% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 34         Time: 2          File: ../../lib/source/history.c Line: 110  
+2. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+3. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+4. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+5. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+
+Allocated Memory on "Default Pool" (256B/10240B) Space effectively used: 42.58% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 34         Time: 2          File: ../../lib/source/history.c Line: 110  
+2. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+3. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+4. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+5. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+6. Memory calloc at position : 0x55f11538a792       Size: 2          Time: 2          File: ../../lib/source/history.c Line: 143  
+
+Allocated Memory on "Default Pool" (288B/10240B) Space effectively used: 40.97% :
+1. Memory calloc at position : 0x55f11538a6b2       Size: 34         Time: 2          File: ../../lib/source/history.c Line: 110  
+2. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+3. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+4. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+5. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+6. Memory calloc at position : 0x55f11538a792       Size: 2          Time: 2          File: ../../lib/source/history.c Line: 143  
+7. Memory calloc at position : 0x55f11538a7b2       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (224B/10240B) Space effectively used: 37.50% :
+1. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a792       Size: 2          Time: 2          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a7b2       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (288B/10240B) Space effectively used: 42.71% :
+1. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a792       Size: 2          Time: 2          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a7b2       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a6b2       Size: 39         Time: 2          File: ../../lib/source/history.c Line: 110  
+
+Allocated Memory on "Default Pool" (320B/10240B) Space effectively used: 43.44% :
+1. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a792       Size: 2          Time: 2          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a7b2       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a6b2       Size: 39         Time: 2          File: ../../lib/source/history.c Line: 110  
+8. Memory calloc at position : 0x55f11538a7d2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+
+Allocated Memory on "Default Pool" (384B/10240B) Space effectively used: 46.61% :
+1. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a792       Size: 2          Time: 2          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a7b2       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a6b2       Size: 39         Time: 2          File: ../../lib/source/history.c Line: 110  
+8. Memory calloc at position : 0x55f11538a7d2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+9. Memory calloc at position : 0x55f11538a7f2       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+
+Allocated Memory on "Default Pool" (416B/10240B) Space effectively used: 45.19% :
+1. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a792       Size: 2          Time: 2          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a7b2       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a6b2       Size: 39         Time: 2          File: ../../lib/source/history.c Line: 110  
+8. Memory calloc at position : 0x55f11538a7d2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+9. Memory calloc at position : 0x55f11538a7f2       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+10. Memory calloc at position : 0x55f11538a832       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 141  
+
+Allocated Memory on "Default Pool" (448B/10240B) Space effectively used: 44.20% :
+1. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a792       Size: 2          Time: 2          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a7b2       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a6b2       Size: 39         Time: 2          File: ../../lib/source/history.c Line: 110  
+8. Memory calloc at position : 0x55f11538a7d2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+9. Memory calloc at position : 0x55f11538a7f2       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+10. Memory calloc at position : 0x55f11538a832       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 141  
+11. Memory calloc at position : 0x55f11538a852       Size: 10         Time: 2          File: ../../lib/source/history.c Line: 142  
+
+Allocated Memory on "Default Pool" (480B/10240B) Space effectively used: 41.88% :
+1. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a792       Size: 2          Time: 2          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a7b2       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a6b2       Size: 39         Time: 2          File: ../../lib/source/history.c Line: 110  
+8. Memory calloc at position : 0x55f11538a7d2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+9. Memory calloc at position : 0x55f11538a7f2       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+10. Memory calloc at position : 0x55f11538a832       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 141  
+11. Memory calloc at position : 0x55f11538a852       Size: 10         Time: 2          File: ../../lib/source/history.c Line: 142  
+12. Memory calloc at position : 0x55f11538a872       Size: 3          Time: 2          File: ../../lib/source/history.c Line: 143  
+
+Allocated Memory on "Default Pool" (512B/10240B) Space effectively used: 41.41% :
+1. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a792       Size: 2          Time: 2          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a7b2       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a6b2       Size: 39         Time: 2          File: ../../lib/source/history.c Line: 110  
+8. Memory calloc at position : 0x55f11538a7d2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+9. Memory calloc at position : 0x55f11538a7f2       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+10. Memory calloc at position : 0x55f11538a832       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 141  
+11. Memory calloc at position : 0x55f11538a852       Size: 10         Time: 2          File: ../../lib/source/history.c Line: 142  
+12. Memory calloc at position : 0x55f11538a872       Size: 3          Time: 2          File: ../../lib/source/history.c Line: 143  
+13. Memory calloc at position : 0x55f11538a892       Size: 11         Time: 2          File: ../../lib/source/history.c Line: 144  
+
+Allocated Memory on "Default Pool" (448B/10240B) Space effectively used: 38.62% :
+1. Memory calloc at position : 0x55f11538a6f2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+2. Memory calloc at position : 0x55f11538a712       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+3. Memory calloc at position : 0x55f11538a752       Size: 8          Time: 2          File: ../../lib/source/history.c Line: 141  
+4. Memory calloc at position : 0x55f11538a772       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 142  
+5. Memory calloc at position : 0x55f11538a792       Size: 2          Time: 2          File: ../../lib/source/history.c Line: 143  
+6. Memory calloc at position : 0x55f11538a7b2       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 144  
+7. Memory calloc at position : 0x55f11538a7d2       Size: 16         Time: 2          File: ../../lib/source/list.c Line: 12   
+8. Memory calloc at position : 0x55f11538a7f2       Size: 40         Time: 2          File: ../../lib/source/list.c Line: 14   
+9. Memory calloc at position : 0x55f11538a832       Size: 9          Time: 2          File: ../../lib/source/history.c Line: 141  
+10. Memory calloc at position : 0x55f11538a852       Size: 10         Time: 2          File: ../../lib/source/history.c Line: 142  
+11. Memory calloc at position : 0x55f11538a872       Size: 3          Time: 2          File: ../../lib/source/history.c Line: 143  
+12. Memory calloc at position : 0x55f11538a892       Size: 11         Time: 2          File: ../../lib/source/history.c Line: 144  
+
