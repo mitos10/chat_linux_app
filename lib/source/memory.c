@@ -2,6 +2,7 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include "../header/debug.h"
 #include "../header/memory.h"
 
 //Macro are defined in memory.h as wrappers for the real functions
@@ -27,10 +28,14 @@ void* memDefaultInit(size_t size){
 
 void* memInit(char* id, size_t size, char* traceFileRoute){
 
+	//Argument sanity check
+	__ASSERT__(id != NULL,__ASSERT_NULL__)
+	__ASSERT__(traceFileRoute != NULL,__ASSERT_NULL__)
 
     //Initialization of memory pool
     uint16_t total_size = CHUNK_ALLOC_REG_SZ(size) * CHUNK_SIZE * 8;
     printf("SIZE %d\n",CHUNK_ALLOC_REG_SZ(size));
+    
     poolNode aux = {
         .data = calloc(total_size + CHUNK_ALLOC_REG_SZ(size), sizeof(uint8_t)),
         .chunkReg = aux.data + total_size,
@@ -56,7 +61,6 @@ void* memInit(char* id, size_t size, char* traceFileRoute){
 	nd->data = memcpy(malloc(sizeof(poolNode)), &aux, sizeof(poolNode));
 	nd->next_ptr = NULL;
     listInsertRsvd(&_pool_list, nd, LAST_POS);
-    //listInsert(&_pool_list, &aux, sizeof(poolNode), LAST_POS);
     
     //Return ptr to initial position
     return aux.data;
@@ -114,7 +118,7 @@ void* cmalloc(size_t size, char* id){
         }
 
         //Sets mem to zero
-        //memset(init_ptr + METADATA_SIZE, 0x00, size);
+        memset(init_ptr + METADATA_SIZE, 0x00, size);
 
         return init_ptr + METADATA_SIZE;
     }
@@ -184,7 +188,7 @@ void* memMonCmalloc(size_t size, char* id, char* FILE, uint16_t LINE){
     if(NULL == monNd.ptr_id){
         fprintf(aux->file, "Memory pool: \"%s\" out of memory.\tSize: %-10lu Time %-10ld File: %-20s Line: %-5d\n\n",
                                     id, monNd.size, monNd.time, monNd.FILE, monNd.LINE);
-        #ifdef RECORD_ALL
+        #ifdef __RECORD_ALL__
             memMonPrint(id);
         #endif
         free(monNd.FILE);
@@ -194,7 +198,7 @@ void* memMonCmalloc(size_t size, char* id, char* FILE, uint16_t LINE){
     aux->monHandler.sizeEffective += size;
     listInsertRsvd(& aux->monHandler.trace, nd, LAST_POS);
     
-    #ifdef RECORD_ALL
+    #ifdef __RECORD_ALL__
         memMonPrint(id);
     #endif
 
@@ -215,7 +219,7 @@ void memMonCfree(void* ptr, char* id, char* FILE, uint16_t LINE){
     aux->monHandler.sizeEffective -= aux_node->size;
     free(listDeleteRsvd(&aux->monHandler.trace, pos));
     cfree(ptr, id);
-    #ifdef RECORD_ALL
+    #ifdef __RECORD_ALL__
         memMonPrint(id);
     #endif
 }
@@ -225,8 +229,9 @@ void memMonPrint(char *id){
     if(NULL == aux)
         return;
     if(listGetSize(&aux->monHandler.trace)){
-        fprintf(aux->file, "Allocated Memory on \"%s\" (%.dB/%.dB) Space effectively used: %.2f%% :\n",
-        id, aux->monHandler.sizeAllocated, aux->size, (float)aux->monHandler.sizeEffective / aux->monHandler.sizeAllocated * 100);
+        fprintf(aux->file, "Allocated Memory on \"%s\" (%dB/%dB) Space effectively used: %.2f%% :\n",
+        id, aux->monHandler.sizeAllocated, aux->size, 
+        (float)aux->monHandler.sizeEffective / (aux->monHandler.sizeAllocated?aux->monHandler.sizeAllocated:1) * 100);
         listPrint(&aux->monHandler.trace, aux->file);
         fprintf(aux->file, "\n");
     }

@@ -1,16 +1,23 @@
 #include "../header/list.h"
-
-#ifdef MEMORY
-	#include "../header/memory.h"
-#endif
-
+#include "../header/debug.h"
 
 void listInsert(List* l, void* const data, size_t const size, int16_t const pos){
 
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+	__ASSERT__(data != NULL,__ASSERT_NULL__)
+	__ASSERT__(pos >= -1,__ASSERT_NULL__)
+	
 	//Reserving Memory
 	NODE* nd = malloc(sizeof(NODE));
+	__ASSERT__(nd!=NULL,__ASSERT_NULL__)
 	nd->data = memcpy(malloc(size), data, size);
+	__ASSERT__(nd->data, __ASSERT_NULL__);
 	nd->next_ptr = NULL;
+	
+	//Inits node internal data
+	if(l->initNode != NULL)
+		l->initNode(nd->data);
 
 	//Checking if last node
 	uint16_t is_last_node = (pos == LAST_NODE);
@@ -31,6 +38,11 @@ void listInsert(List* l, void* const data, size_t const size, int16_t const pos)
 
 void listInsertRsvd(List* l, NODE* nd, int16_t const pos){
 
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+	__ASSERT__(nd != NULL,__ASSERT_NULL__)
+	__ASSERT__(pos >= -1,__ASSERT_NULL__)
+
 	//Checking if last node
 	uint16_t is_last_node = (pos == LAST_NODE);
 
@@ -49,31 +61,66 @@ void listInsertRsvd(List* l, NODE* nd, int16_t const pos){
 }
 
 void listMove(List* l, uint16_t const pos_dest, uint16_t const pos_src){
+
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+	__ASSERT__(pos_dest >= 0,__ASSERT_NULL__)
+	__ASSERT__(pos_src >= 0,__ASSERT_NULL__)
+
 	if(pos_dest != pos_src && pos_dest < l->size && pos_src < l->size){
-		NODE** prev_src_node = NULL;
-		NODE** src_node = NULL;
-		NODE** prev_dest_node = NULL;
+		
+		NODE** prev_src_node_next = NULL;
+		NODE** src_node_next = NULL;
+		NODE** prev_dest_node_next = NULL;
+		
 		uint16_t i = 0;
+		
 		for(LIST* it = &l->root; *it != NULL; it = &(*it)->next_ptr, i++){
+
+			//Takes position source node and previous one
 			if(i == pos_src){
-				prev_src_node = it;
-				src_node = &(*it)->next_ptr;
+				prev_src_node_next = it;
+				src_node_next = &(*it)->next_ptr;
 			}
+			
+			//Takes position dest node
+			//E.g. if moving 1 to 3 -- 2-3-1 the node is put after
+			//node 3, if moving 5 to 3 -- 1-2-5-3-4 the node is
+			//put after node 2 
 			if(i == pos_dest)
 				if(pos_dest > pos_src)
-					prev_dest_node = &(*it)->next_ptr;
-				else prev_dest_node = it;
+					prev_dest_node_next = &(*it)->next_ptr;
+				else prev_dest_node_next = it;
 		}
-		NODE* aux = *prev_src_node;
-		*prev_src_node = *src_node;
-		*src_node = *prev_dest_node;
-		*prev_dest_node = aux;
+		
+		//E.g. Moving 3 to 5
+
+		//aux = 2->next_ptr
+		NODE* aux = *prev_src_node_next;
+		
+		//2->next_ptr = 3->next_ptr (node 4)
+		//now 1-2-4-5-6-7... 3 is out
+		*prev_src_node_next = *src_node_next;
+		
+		//3->next_ptr = 5->next_ptr (node 6)
+		*src_node_next = *prev_dest_node_next;
+		
+		//5->next_ptr = node 3
+		//now 1-2-4-5-3-6-7...
+		*prev_dest_node_next = aux;
 	}
 }
 
 void listSwap(List* l, uint16_t const fst_pos, uint16_t const snd_pos){
+
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+	__ASSERT__(fst_pos >= 0,__ASSERT_NULL__)
+	__ASSERT__(snd_pos >= 0,__ASSERT_NULL__)
+
 	uint16_t i= 0, is_fst_found = 0, is_snd_found = 0;
 	LIST it_fst_pos = NULL, it_snd_pos = NULL;
+	
 	if(fst_pos != snd_pos)
 		for(LIST it = l->root; it != NULL && !(is_fst_found && is_snd_found); it = it->next_ptr, i++){
 			if(i == fst_pos){
@@ -85,12 +132,18 @@ void listSwap(List* l, uint16_t const fst_pos, uint16_t const snd_pos){
 				it_snd_pos = it;
 			}
 		}
+
+	//Just swaps data from both nodes
 	void* aux = it_fst_pos->data;
 	it_fst_pos->data = it_snd_pos->data;
 	it_snd_pos->data = aux;
 }
 
 void* listGetData(List* l, int16_t const pos){
+	
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+	__ASSERT__(pos >= 0,__ASSERT_NULL__)
 	
 	uint16_t i = 0;
 
@@ -113,6 +166,10 @@ void* listGetData(List* l, int16_t const pos){
 
 void listDelete(List* l, int16_t const pos){
 
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+	__ASSERT__(pos >= 0,__ASSERT_NULL__)
+	
 	NODE* nd = NULL;
 
 	//Checking if last node
@@ -148,6 +205,10 @@ void listDelete(List* l, int16_t const pos){
 
 NODE* listDeleteRsvd(List* l, int16_t const pos){
 
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+	__ASSERT__(pos >= 0,__ASSERT_NULL__)
+
 	NODE* nd = NULL;
 
 	//Checking if last node
@@ -178,16 +239,29 @@ NODE* listDeleteRsvd(List* l, int16_t const pos){
 }
 
 void listDeleteAll(List* l){
+
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+	
 	for(uint16_t i = 0; l->size; i++)
 		listDelete(l, 0);
 	l->root = NULL;
 }
 
 size_t listGetSize(List* l){
+	
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+
 	return l->size;
 }
 
 void listPrint(List* l, FILE* f){
+
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+	__ASSERT__(f != NULL,__ASSERT_NULL__)
+
 	int i = 0;
 	for(LIST it = l->root; it != NULL; it = it->next_ptr, i++){
 		fprintf(f, "%d. ", i+1);
@@ -196,6 +270,12 @@ void listPrint(List* l, FILE* f){
 }
 
 void* listFind(List* l, uint16_t* pos, void* const s_data, uint16_t func){
+
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+	//__ASSERT__(pos != NULL,__ASSERT_NULL__)
+	__ASSERT__(s_data >= 0,__ASSERT_NULL__)
+	__ASSERT__(l->cmpData[func] != NULL,__ASSERT_NULL__)
 
 	if(l->root != NULL){
 		//Iterating through list
@@ -210,11 +290,22 @@ void* listFind(List* l, uint16_t* pos, void* const s_data, uint16_t func){
 }
 
 void listCopy(List* dest, List* src, size_t const size){
+
+	//Argument sanity check
+	__ASSERT__(dest != NULL,__ASSERT_NULL__)
+	__ASSERT__(src != NULL,__ASSERT_NULL__)
+	__ASSERT__(size >= 0,__ASSERT_NULL__)
+
 	for(LIST it = src->root; it != NULL; it = it->next_ptr)
 		listInsert(dest,it->data, size, LAST_POS);
 	dest = src;
 }
 
 void listSort(List* l, uint16_t func_sort, uint16_t func_cmp){
+	
+	//Argument sanity check
+	__ASSERT__(l != NULL,__ASSERT_NULL__)
+	__ASSERT__(l->sortNode[func_sort] != NULL,__ASSERT_NULL__)
+	
 	l->sortNode[func_sort](l, func_cmp);
 }

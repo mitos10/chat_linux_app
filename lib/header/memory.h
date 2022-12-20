@@ -5,7 +5,6 @@
 
 #include <math.h>
 #include <time.h>
-#include "general_definitions.h"
 #include "list.h"
 
 /** DEFINES **/
@@ -22,6 +21,8 @@
 #define malloc(SIZE)            memMonCmalloc(SIZE, DEFAULT_POOL, __FILE__, __LINE__)
 #define calloc(SIZE, T_SIZE)    memMonCmalloc(SIZE * T_SIZE, DEFAULT_POOL, __FILE__, __LINE__)
 #define free(PTR)               memMonCfree(PTR, DEFAULT_POOL, __FILE__, __LINE__)
+
+#warning malloc, calloc and free have been overrided 
 
 /*
 

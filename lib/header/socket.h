@@ -8,12 +8,8 @@
 #include <string.h>
 #include <stdint.h>
 #include <poll.h>
-#include "general_definitions.h"
+#include "debug.h"
 #include "list.h"
-
-#ifdef MEMORY
-	#include "memory.h"
-#endif
 
 /** DEFINES **/
 

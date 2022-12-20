@@ -3,7 +3,7 @@
 #define DNS_H
 
 #include <string.h>
-#include "general_definitions.h"
+#include "debug.h"
 #include "socket.h"
 #include "list.h"
 #include <stdlib.h>

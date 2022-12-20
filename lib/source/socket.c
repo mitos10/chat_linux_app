@@ -43,8 +43,8 @@ void sockInit(){
 
 SOCKET_ADD_RESP sockAdd(struct sockaddr_in *sockaddr, char *user, SOCKET_TYPE type){
 	int32_t sockfd = socket(AF_INET, type == TCP? SOCK_STREAM : SOCK_DGRAM, 0);
-
-    if (sockfd == -1) 
+    
+	if (sockfd == -1) 
         return SOCKET_CREATION_FAIL;
 
     if (connect(sockfd, (struct sockaddr*)sockaddr, sizeof(*sockaddr)) != 0)
@@ -71,11 +71,7 @@ int32_t sockWriteQ(pack_node *data){
 	dict_node* user = listFind(&_UsrSck_h.userFDdict, NULL, data->user, CMP_USERNAME);
 	if( NULL != user )
 		listInsert(&_UsrSck_h.sndQ, data, sizeof(pack_node), LAST_NODE);
-	printf("Send Queue\n");
-	listPrint(&_UsrSck_h.sndQ, stdout);
-	printf("Rcv Queue\n");
-	listPrint(&_UsrSck_h.rcvQ, stdout);
-	fflush(stdout);
+	__DEBUG_PRINT__(__DEBUG_SOCK_WRITE_Q__)
 	return 1;
 }	
 

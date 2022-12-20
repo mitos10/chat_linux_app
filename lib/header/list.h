@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include "general_definitions.h"
 
 /** DEFINES **/
 
@@ -34,6 +33,7 @@ struct list{
 	size_t size;
 
 	//Functions
+	void (*initNode)(void*);
 	void (*deleteNode)(void*);
 	void (*printNode)(FILE*, void*);
 	void (*sortNode[32])(List* , uint16_t);

@@ -36,7 +36,7 @@ int process_test(){
 
 void main(){
     
-    memDefaultInit(10000);
+    memDefaultInit(100);
     struct sockaddr_in aux;
     unsigned short port = 8888;
     aux.sin_family = AF_INET;

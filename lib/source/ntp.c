@@ -36,6 +36,10 @@ void NTPrequest()
         .user = strcpy(calloc(48, sizeof(uint8_t)), "NTP"),
         .size = 48,
     };
+    
+    __ASSERT__(ntp_pack.data != NULL, __ASSERT_NULL__)
+    __ASSERT__(ntp_pack.user != NULL, __ASSERT_NULL__)
+
     sockWriteQ(&ntp_pack);
 }
 
@@ -50,6 +54,10 @@ uint32_t NTPgetUNIXtime(){
 }
 
 void _NTPprocessPack(pack_node* NTP_pack){
+
+    //Argument sanity check
+    __ASSERT__(NTP_pack != NULL, __ASSERT_NULL__)
+
     _time.userTime = clock()/1000000;
     _time.UNIXtime = ntohl( ( (uint32_t *)NTP_pack->data) [10] ) - 2208988800;
     _time.isTimeUpdated = TRUE;

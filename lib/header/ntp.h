@@ -2,12 +2,8 @@
 #define NTP_H
 
 #include "socket.h"
-#include "general_definitions.h"
+#include "debug.h"
 #include "dns.h"
-
-#ifdef MEMORY
-    #include "memory.h"
-#endif
 
 typedef struct{
     uint32_t userTime;
