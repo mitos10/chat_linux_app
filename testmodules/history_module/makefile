@@ -1,2 +1,2 @@
 all:
-	gcc -o history_test history_test.c ../../lib/header/history.h ../../lib/source/history.c ../../lib/header/list.h ../../lib/source/list.c ../../lib/header/file_crypt.h ../../lib/source/file_crypt.c ../../lib/header/debug.h ../../lib/header/memory.h ../../lib/source/memory.c ../../lib/header/aes.h ../../lib/source/aes.c  -lm -g
+	gcc -o history_test history_test.c ../../lib/header/history.h ../../lib/source/history.c ../../lib/header/list.h ../../lib/source/list.c ../../lib/header/file_crypt.h ../../lib/source/file_crypt.c ../../lib/header/debug.h ../../lib/header/memory.h ../../lib/source/memory.c ../../lib/header/aes.h ../../lib/source/aes.c ../../lib/header/password_manager.h ../../lib/source/password_manager.c -O0 -lm -g

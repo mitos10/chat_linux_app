@@ -51,7 +51,7 @@ void readHistoryFromFile(char* file_path, uint8_t isEncripted);
 void clearHistory();
 
 /**
- * @brief Get line from strin passed as argument
+ * @brief Local function to get line from string passed as argument
  * 
  * @param line string extracted
  * @param size_line size of the string extracted
@@ -63,14 +63,14 @@ void clearHistory();
 static int _get_line_string(char** line, uint32_t* size_line, char* data_buf, char** out_buf, uint32_t* size_buf);
 
 /**
- * @brief Delete history list
+ * @brief Local function to delete history node
  * 
  * @param nd node from history list to delete
  */
 static void _delete_history(void* nd);
 
 /**
- * @brief Prints node from history list
+ * @brief Local function to prints node from history list
  * 
  * @param f file descriptor to print
  * @param nd node from history list to print
@@ -78,7 +78,7 @@ static void _delete_history(void* nd);
 static void _print_history(FILE*f, void* nd);
 
 /**
- * @brief Inits history node
+ * @brief Local function to inits history node
  * 
  * @param nd node to init before including into list
  */

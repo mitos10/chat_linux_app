@@ -1,7 +1,20 @@
 #include "../../lib/header/history.h"
+#include "../../lib/header/password_manager.h"
 
 void main(){
+
+    memDefaultInit(10000);
     
+        password_nd test = {
+        .id = 1,
+        .type = 0,
+        .password = "abcdefgh",
+        .pass_sz = strlen("abcdefgh"),
+    };
+
+    savePassword(&test);
+    showPasswords();
+
     history_node nd = {
         .file_path = "test path",
         .file_type = 1,
@@ -10,7 +23,6 @@ void main(){
         .user = "test user",
     };
 
-    memDefaultInit(10000);
 
     addMessage(&nd);
     history_node nd2 = {

@@ -6,4 +6,9 @@
     #define __MEMORY__ 1
     #define __RECORD_ALL__ 1
     #define __SANITY_CHECKS__ 1
+    #include <stdio.h>
+    #include <signal.h>
+    #include <stdio.h>
+    #include <signal.h>
+    #include <execinfo.h>
 #endif
