@@ -8,8 +8,6 @@
 #include <math.h>
 #include <netinet/in.h>
 
-#include "general_definitions.h"
-
 #define SHA_CHUNK_SIZE 64
 
 typedef struct __attribute__((__packed__, aligned(4))){
@@ -23,6 +21,6 @@ typedef struct __attribute__((__packed__, aligned(4))){
     uint32_t h;
 }h_state;
 
-char* sha256sum( char* pass);
+char* SHA256_CheckSum(char* buffer);
 
 #endif

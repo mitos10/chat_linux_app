@@ -3,7 +3,7 @@
 
 void main(){
 
-    memDefaultInit(10000);
+    Memory_DefaultInit(10000);
     
         password_nd test = {
         .id = 1,
@@ -12,29 +12,31 @@ void main(){
         .pass_sz = strlen("abcdefgh"),
     };
 
-    savePassword(&test);
-    showPasswords();
+    Password_save(&test);
+    Password_show();
 
     history_node nd = {
         .file_path = "test path",
         .file_type = 1,
-        .group = "gr",
-        .msg = "test msg",
-        .user = "test user",
+        .group = strcpy((char*)malloc(sizeof("gr")),"gr"),
+        .msg = strcpy((char*)malloc(sizeof("test msg")),"test msg"),
+        .user = strcpy((char*)malloc(sizeof("test user")),"test user"),
     };
 
-
-    addMessage(&nd);
+    printf("Add 1st message\n");
+    History_AddMessage(&nd);
     history_node nd2 = {
         .file_path = "test path 2",
         .file_type = 1,
-        .group = "gr2",
-        .msg = "test msg2",
-        .user = "test user2",
+        .group = strcpy((char*)malloc(sizeof("gr2")),"gr2"),
+        .msg = strcpy((char*)malloc(sizeof("test msg2")),"test msg2"),
+        .user = strcpy((char*)malloc(sizeof("test user2")),"test user2"),
     };
-    addMessage(&nd2);
 
-    writeHistoryToFile("test.txt", 1);
-    clearHistory();
-    readHistoryFromFile("test.txt", 1);
+    printf("Add 2nd message\n");
+    History_AddMessage(&nd2);
+    printf("Write history to file\n");
+    History_WriteAllToFile("test.txt", 1);
+    History_ClearAll();
+    History_ReadAllFromFile("test.txt", 1);
 }

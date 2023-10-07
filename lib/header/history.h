@@ -25,7 +25,7 @@ enum {
  * @param hist_nd 
  * @return uint8_t error code
  */
-uint8_t addMessage(history_node* hist_nd);
+uint8_t History_AddMessage(history_node* hist_nd);
 
 /**
  * @brief Write history list to file
@@ -34,7 +34,7 @@ uint8_t addMessage(history_node* hist_nd);
  * @param isEncripted uses aes encryption or plain text
  * @return uint8_t error code
  */
-uint8_t writeHistoryToFile(char* file_path, uint8_t isEncripted);
+uint8_t History_WriteAllToFile(char* file_path, uint8_t isEncripted);
 
 /**
  * @brief Read history from file to history list
@@ -42,46 +42,12 @@ uint8_t writeHistoryToFile(char* file_path, uint8_t isEncripted);
  * @param file_path of the history file
  * @param isEncripted uses aes encryption or plain text
  */
-void readHistoryFromFile(char* file_path, uint8_t isEncripted);
+void History_ReadAllFromFile(char* file_path, uint8_t isEncripted);
 
 /**
  * @brief clears history list
  * 
  */
-void clearHistory();
-
-/**
- * @brief Local function to get line from string passed as argument
- * 
- * @param line string extracted
- * @param size_line size of the string extracted
- * @param data_buf input string
- * @param out_buf address after line
- * @param size_buf size of input string after line
- * @return int 
- */
-static int _get_line_string(char** line, uint32_t* size_line, char* data_buf, char** out_buf, uint32_t* size_buf);
-
-/**
- * @brief Local function to delete history node
- * 
- * @param nd node from history list to delete
- */
-static void _delete_history(void* nd);
-
-/**
- * @brief Local function to prints node from history list
- * 
- * @param f file descriptor to print
- * @param nd node from history list to print
- */
-static void _print_history(FILE*f, void* nd);
-
-/**
- * @brief Local function to inits history node
- * 
- * @param nd node to init before including into list
- */
-static void _init_history(void* nd);
+void History_ClearAll();
 
 #endif

@@ -17,25 +17,17 @@ struct file_crypt
 };
 
 /**
- * @brief Generate random initial vector
- * 
- * @param size of initial vector
- * @return char* output string of initial vector
- */
-char* generate_iv(int size);
-
-/**
  * @brief Encrypts file
  * 
  * @param data data to be encrypted
  */
-void enc_file(struct file_crypt *data);
+void File_Encrypt(struct file_crypt *data);
 
 /**
  * @brief Decrypts file
  * 
  * @param data data to be decrypted
  */
-void dec_file(struct file_crypt *data);
+void File_Decrypt(struct file_crypt *data);
 
 #endif

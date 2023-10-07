@@ -1,11 +1,37 @@
 #include "../header/dns.h"
 
+/**
+ * @brief 
+ * 
+ * @param host_name 
+ * @return uint8_t* 
+ */
+static uint8_t* DNS_parseHn(uint8_t *host_name);
+
+/**
+ * @brief 
+ * 
+ * @param s_data 
+ * @param data 
+ * @return int16_t 
+ */
+static int16_t cmp_id(void* s_data, void* data);
+
+/**
+ * @brief 
+ * 
+ * @param s_data 
+ * @param data 
+ * @return int16_t 
+ */
+static int16_t cmp_host_name(void* s_data, void* data);
+
 enum { CMP_ID = 0, CMP_HOST_NAME = 1};
 
 List _DNS_req_list = {
     .root = NULL,
     .size = 0,
-    .cmpData = {[CMP_ID] = _cmp_id, [CMP_HOST_NAME] = _cmp_host_name, NULL},
+    .cmpData = {[CMP_ID] = cmp_id, [CMP_HOST_NAME] = cmp_host_name, NULL},
     .printNode = NULL,
     .deleteNode = NULL,
     .sortNode = {NULL},
@@ -35,26 +61,26 @@ const char* serverList[] = {
     "9.9.9.9",
 };
 
-void DNSinitServ(){
+void DNS_initServ(){
     struct sockaddr_in aux = {
         .sin_addr = {.s_addr = inet_addr(serverList[0])},
         .sin_family = AF_INET,
         .sin_port = htons(53), 
     };
 
-    for(uint16_t i = 1; SUCCESS != sockAdd(&aux, "DNS", UDP) && i < sizeof(serverList); i++)
+    for(uint16_t i = 1; SUCCESS != Socket_Add(&aux, "DNS", UDP) && i < sizeof(serverList); i++)
         aux.sin_addr.s_addr = inet_addr(serverList[i]);
 }
 
-uint8_t* DNSgetIP(uint16_t ID){
-    DNS_req_node* data = listFind(&_DNS_req_list, NULL, &ID, 0);
+uint8_t* DNS_getIP(uint16_t ID){
+    DNS_req_node* data = List_Find(&_DNS_req_list, NULL, &ID, 0);
     return NULL != data ? data->IP : NULL;
 }
 
-uint16_t DNSrequest(uint8_t *host_name){
+uint16_t DNS_request(uint8_t *host_name){
 
     //Looks if request has already been made
-    DNS_req_node *aux = listFind(&_DNS_req_list, NULL, host_name, CMP_HOST_NAME);
+    DNS_req_node *aux = List_Find(&_DNS_req_list, NULL, host_name, CMP_HOST_NAME);
 
     //Return request ID if found
     if(aux != NULL)
@@ -71,7 +97,7 @@ uint16_t DNSrequest(uint8_t *host_name){
         .arcount = 0x0000
     };
 
-    uint8_t *question = _DNSparseHn(host_name);
+    uint8_t *question = DNS_parseHn(host_name);
 
     uint8_t footer[]= {0x00,0x01,0x00,0x01};
 
@@ -86,12 +112,12 @@ uint16_t DNSrequest(uint8_t *host_name){
     memcpy( (data_packet + offset),    footer,     sizeof(footer));
     offset += sizeof(footer);
 
-    pack_node dns_pack = {
+    pack_node_t dns_pack = {
         .data = data_packet,
         .size = offset,
         .user = strcpy(calloc(10, sizeof(uint8_t)), "DNS"),
     };
-    sockWriteQ(&dns_pack);
+    Socket_WriteQueue(&dns_pack);
 
     DNS_req_node req_node = {
         .ID = header.ID,
@@ -99,12 +125,12 @@ uint16_t DNSrequest(uint8_t *host_name){
         .IP = NULL,
         .pack_size = sizeof(header) + strlen(question) + 1 + sizeof(footer),
     };
-    listInsert(&_DNS_req_list, &req_node, sizeof(DNS_req_node), LAST_POS);
+    List_Insert(&_DNS_req_list, &req_node, sizeof(DNS_req_node), LAST_POS);
 
     return header.ID;
 }
 
-uint8_t* _DNSparseHn(uint8_t *host_name){
+static uint8_t* DNS_parseHn(uint8_t *host_name){
     
     uint8_t *token, *str;
     uint8_t *buffer_hn = malloc(strlen(host_name));
@@ -125,11 +151,11 @@ uint8_t* _DNSparseHn(uint8_t *host_name){
     return buffer_out;
 }
 
-void _DNSprocessPacket(pack_node *DNS_pack){
+void DNS_processPacket(pack_node_t *DNS_pack){
 
     uint16_t* ID_ptr = DNS_pack->data;
     uint8_t* pack_ptr = DNS_pack->data;
-    DNS_req_node* data = listFind(&_DNS_req_list, NULL, ID_ptr, CMP_ID);
+    DNS_req_node* data = List_Find(&_DNS_req_list, NULL, ID_ptr, CMP_ID);
     
     uint16_t pack_size = data->pack_size;
     if( pack_ptr[pack_size] == 0xC0 && pack_ptr[pack_size+1] == 0x0C ){
@@ -140,10 +166,10 @@ void _DNSprocessPacket(pack_node *DNS_pack){
     }
 }
 
-static int16_t _cmp_id(void* s_data, void* data){
+static int16_t cmp_id(void* s_data, void* data){
     return !((DNS_req_node*)data)->ID == *(uint16_t*)s_data;
 }
 
-static int16_t _cmp_host_name(void* s_data, void* data){
+static int16_t cmp_host_name(void* s_data, void* data){
     return strcmp(s_data, ((DNS_req_node*)data)->hostName);
 }

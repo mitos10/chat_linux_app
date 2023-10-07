@@ -23,15 +23,15 @@
  * @brief Init DNS service
  * 
  */
-void DNSinitServ();
+void DNS_initServ();
 
 /**
- * @brief DNS request
+ * @brief DNS_ request
  * 
  * @param host_name 
  * @return uint16_t 
  */
-uint16_t DNSrequest(uint8_t *host_name);
+uint16_t DNS_request(uint8_t *host_name);
 
 /**
  * @brief 
@@ -39,39 +39,13 @@ uint16_t DNSrequest(uint8_t *host_name);
  * @param ID 
  * @return uint8_t* 
  */
-uint8_t* DNSgetIP(uint16_t ID);
-
-/**
- * @brief 
- * 
- * @param host_name 
- * @return uint8_t* 
- */
-uint8_t* _DNSparseHn(uint8_t *host_name);
+uint8_t* DNS_getIP(uint16_t ID);
 
 /**
  * @brief 
  * 
  * @param DNS_pack 
  */
-void _DNSprocessPacket(pack_node *DNS_pack);
-
-/**
- * @brief 
- * 
- * @param s_data 
- * @param data 
- * @return int16_t 
- */
-static int16_t _cmp_id(void* s_data, void* data);
-
-/**
- * @brief 
- * 
- * @param s_data 
- * @param data 
- * @return int16_t 
- */
-static int16_t _cmp_host_name(void* s_data, void* data);
+void DNS_processPacket(pack_node_t *DNS_pack);
 
 #endif

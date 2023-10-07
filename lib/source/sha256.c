@@ -28,22 +28,45 @@ uint32_t const k[] = {
     0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-int pad_pass(char* pass, char** padded_pass);
+/**
+ * @brief 
+ * 
+ * @param buffer 
+ * @param padded_buffer 
+ * @return int 
+ */
+static int pad_buffer(char* buffer, char** padded_buffer);
+/**
+ * @brief 
+ * 
+ * @param w 
+ * @param padded_buffer 
+ * @param i 
+ */
+static void init_w(uint32_t w[64], char* padded_buffer, int i);
+/**
+ * @brief 
+ * 
+ * @param sha256_hash 
+ * @param sha256_prev 
+ */
+static void sum_h_prev_h(h_state *sha256_hash, h_state *sha256_prev);
+/**
+ * @brief 
+ * 
+ * @param sha256_hash 
+ * @return char* 
+ */
+static char* endianness_sha(h_state *sha256_hash);
 
-void init_w(uint32_t w[64], char* padded_pass, int i);
-
-void sum_h_prev_h(h_state *sha256_hash, h_state *sha256_prev);
-
-char* endianness_sha(h_state *sha256_hash);
-
-char* sha256sum( char *pass){
+char* SHA256_CheckSum(char *buffer){
     
     h_state* sha256_hash = (h_state*) calloc(1,sizeof(h_state));
     h_state* sha256_prev = (h_state*) calloc(1,sizeof(h_state));
     *sha256_hash = h_init;
 
-    char* padded_pass = NULL;
-    int size = pad_pass(pass, &padded_pass);
+    char* padded_buffer = NULL;
+    int size = pad_buffer(buffer, &padded_buffer);
 
     for(int i = 0; i < size / SHA_CHUNK_SIZE; i++ ){
         
@@ -51,7 +74,7 @@ char* sha256sum( char *pass){
 
         uint32_t w[64] = {0};
         
-        init_w(w,padded_pass,i);
+        init_w(w,padded_buffer,i);
         
         for(int ii = 0; ii < 64; ii++){
 
@@ -79,29 +102,29 @@ char* sha256sum( char *pass){
 
     char* sha_256_str = endianness_sha(sha256_hash);
     
-    free(padded_pass);
+    free(padded_buffer);
     free(sha256_hash);
     
     return sha_256_str;
 }
 
-int pad_pass(char* pass, char** padded_pass){
-    uint64_t len = strlen(pass)*8;
+static int pad_buffer(char* buffer, char** padded_buffer){
+    uint64_t len = strlen(buffer)*8;
     uint64_t footer_len = htobe64(len);
     int total_size = ceil( (float) (len / 8 + 8) / SHA_CHUNK_SIZE) * SHA_CHUNK_SIZE;
-    *padded_pass = (char*) calloc( total_size, sizeof(char));
-    strcpy(*padded_pass, pass);
-    (*padded_pass)[len/8] = 0x80;
-    memcpy(& ((*padded_pass)[total_size - 8]), &footer_len, 8);
+    *padded_buffer = (char*) calloc( total_size, sizeof(char));
+    strcpy(*padded_buffer, buffer);
+    (*padded_buffer)[len/8] = 0x80;
+    memcpy(& ((*padded_buffer)[total_size - 8]), &footer_len, 8);
     return total_size;
 }
 
-void init_w(uint32_t w[64], char* padded_pass, int i){
+static void init_w(uint32_t w[64], char* padded_buffer, int i){
     
-    uint32_t* aux_pass = (uint32_t*) padded_pass;
+    uint32_t* aux_buffer = (uint32_t*) padded_buffer;
 
     for(int i = 0; i < 16; i++)
-        w[i] = ntohl(aux_pass[i]);
+        w[i] = ntohl(aux_buffer[i]);
 
     for(int i = 16; i < 64; i++){
         uint32_t s0 = R_ROT(w[i -15],7) ^ R_ROT(w[i - 15], 18) ^ (w[i - 15] >> 3);
@@ -111,7 +134,7 @@ void init_w(uint32_t w[64], char* padded_pass, int i){
 
 }
 
-void sum_h_prev_h(h_state *sha256_hash, h_state *sha256_prev){
+static void sum_h_prev_h(h_state *sha256_hash, h_state *sha256_prev){
     
     uint32_t *aux_hash = (uint32_t*) sha256_hash;
     uint32_t *aux_prev = (uint32_t*) sha256_prev;
@@ -121,7 +144,7 @@ void sum_h_prev_h(h_state *sha256_hash, h_state *sha256_prev){
 
 }
 
-char* endianness_sha(h_state *sha256_hash){
+static char* endianness_sha(h_state *sha256_hash){
     uint32_t *sha_out =  (uint32_t*) calloc(8, sizeof(uint32_t));
     uint32_t *aux = (uint32_t*) sha256_hash;
     for(int i = 0; i < 8; i++)

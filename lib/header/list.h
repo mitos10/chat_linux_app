@@ -20,16 +20,14 @@ struct node;
 typedef struct node {
 	void* data;
 	struct node* next_ptr;
-}NODE;
+}node_t;
 
-typedef NODE*  LIST;
-typedef NODE** ROOT;
-
+typedef node_t*  root_t;
 typedef struct list List;
 
 struct list{
 	//Data
-	LIST root;
+	root_t root;
 	size_t size;
 
 	//Functions
@@ -51,7 +49,7 @@ struct list{
  * @param size size of data
  * @param pos position to save
  */
-void listInsert(List* l, void* const data, size_t const size, int16_t const pos);
+void List_Insert(List* l, void* const data, size_t const size, int16_t const pos);
 
 /**
  * @brief Insert element list (Previously reserved node)
@@ -60,7 +58,7 @@ void listInsert(List* l, void* const data, size_t const size, int16_t const pos)
  * @param nd reserved node
  * @param pos position to save
  */
-void listInsertRsvd(List* l, NODE* nd, int16_t const pos);
+void List_InsertNode(List* l, node_t* nd, int16_t const pos);
 
 /**
  * @brief Moves node in list from src position to dest position
@@ -69,7 +67,7 @@ void listInsertRsvd(List* l, NODE* nd, int16_t const pos);
  * @param pos_dest 
  * @param pos_src 
  */
-void listMove(List* l, uint16_t const pos_dest, uint16_t const pos_src);
+void List_Move(List* l, uint16_t const pos_dest, uint16_t const pos_src);
 
 /**
  * @brief Swaps two nodes position in list
@@ -78,7 +76,7 @@ void listMove(List* l, uint16_t const pos_dest, uint16_t const pos_src);
  * @param fst_pos 
  * @param snd_pos 
  */
-void listSwap(List* l, uint16_t const fst_pos, uint16_t const snd_pos);
+void List_Swap(List* l, uint16_t const fst_pos, uint16_t const snd_pos);
 
 /**
  * @brief Get element from list
@@ -87,7 +85,7 @@ void listSwap(List* l, uint16_t const fst_pos, uint16_t const snd_pos);
  * @param pos position to get
  * @return void* data
  */
-void* listGetData(List* l, int16_t const pos);
+void* List_GetData(List* l, int16_t const pos);
 
 /**
  * @brief Delete element from list
@@ -95,23 +93,23 @@ void* listGetData(List* l, int16_t const pos);
  * @param l list structure
  * @param pos position to delete
  */
-void listDelete(List* l, int16_t const pos);
+void List_Delete(List* l, int16_t const pos);
 
 /**
  * @brief 
  * 
  * @param l 
  * @param pos 
- * @return NODE* 
+ * @return node_t* 
  */
-NODE* listDeleteRsvd(List* l, int16_t const pos);
+node_t* List_DeleteNode(List* l, int16_t const pos);
 
 /**
  * @brief Delete all elements fron list
  * 
  * @param l list structure
  */
-void listDeleteAll(List* l);
+void List_DeleteAll(List* l);
 
 /**
  * @brief Get size of list
@@ -119,7 +117,7 @@ void listDeleteAll(List* l);
  * @param l list structure
  * @return size_t size of list
  */
-size_t listGetSize(List* l);
+size_t List_GetSize(List* l);
 
 /**
  * @brief Print all elements from list
@@ -127,7 +125,7 @@ size_t listGetSize(List* l);
  * @param l list structure
  * @param f output file
  */
-void listPrint(List* l, FILE* f);
+void List_Print(List* l, FILE* f);
 
 /**
  * @brief Find element from list
@@ -137,7 +135,7 @@ void listPrint(List* l, FILE* f);
  * @param s_data data to be searched
  * @return void* data
  */
-void* listFind(List* l, uint16_t* pos, void* const s_data, uint16_t func);
+void* List_Find(List* l, uint16_t* pos, void* const s_data, uint16_t func);
 
 /**
  * @brief Copies list from src to dest
@@ -146,7 +144,7 @@ void* listFind(List* l, uint16_t* pos, void* const s_data, uint16_t func);
  * @param src pointer to src list
  * @param size size of data structure
  */
-void listCopy(List* dest, List* src, size_t const size);
+void List_Copy(List* dest, List* src, size_t const size);
 
 /**
  * @brief Sort list
@@ -155,6 +153,6 @@ void listCopy(List* dest, List* src, size_t const size);
  * @param func_sort index of sorting function
  * @param func_cmp index of compare function
  */
-void listSort(List* l, uint16_t func_sort, uint16_t func_cmp);
+void List_Sort(List* l, uint16_t func_sort, uint16_t func_cmp);
 
 #endif

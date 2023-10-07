@@ -185,22 +185,31 @@ static const int mixcolumns_m_inv[4][4] = {
 
 static uint8_t rcon[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36 };
 
-size_t aes_encrypt(char* pass, char* string, size_t size, char** str_out, int mode, char* IV){
+static char* round_keys(char* key, int mode);
+static void round_key_matrix(char key[4][4], char* keys, int init_word);
+static void block_matrix(char key[4][4], char* keys, char size);
+static void add_round_key(char block[4][4], char key[4][4]);
+static void shift_rows(char block[4][4], int inv);
+static void sub_bytes(char block[4][4], int inv);
+static void mix_columns(char block[4][4], int inv);
+static char cross_product(char block_byte, char matrix_byte);
+
+size_t AES_Encrypt(char* pass, char* string, size_t size, char** str_out, int mode, char* IV){
     char key[4][4];
     size_t s_out = ceil((float)size/16)*16;
     *str_out = (char*) malloc(s_out);
     char* str_out_aux = *str_out;
-    char* keys = _round_keys( pass, AES_128 );
+    char* keys = round_keys( pass, AES_128 );
     char IV_round[4][4];
 
-    _round_key_matrix(IV_round,IV,0);
+    round_key_matrix(IV_round,IV,0);
     
     for(int k = 0; k < s_out/16; k++){
-        _round_key_matrix(key,keys, 0);
+        round_key_matrix(key,keys, 0);
         
         int s = k < (size / 16)? 16 : size % 16;
         char block[4][4];
-        _block_matrix(block, string + k * 16, s);
+        block_matrix(block, string + k * 16, s);
         
         printf("ORIGINAL MATRIX:\n");
         for(int j = 0; j < 4; j++){
@@ -210,22 +219,22 @@ size_t aes_encrypt(char* pass, char* string, size_t size, char** str_out, int mo
         }
         printf("\n");
         
-        _add_round_key(block, IV_round);
+        add_round_key(block, IV_round);
 
-        _add_round_key(block,key);
+        add_round_key(block,key);
         
         for(int i = 0; i < 9; i++){
-            _sub_bytes(block, 0);
-            _shift_rows(block, 0);
-            _mix_columns(block,0);
-            _round_key_matrix(key, keys, (i+1)*4);
-            _add_round_key(block,key);
+            sub_bytes(block, 0);
+            shift_rows(block, 0);
+            mix_columns(block,0);
+            round_key_matrix(key, keys, (i+1)*4);
+            add_round_key(block,key);
         }
 
-        _sub_bytes(block, 0);
-        _shift_rows(block, 0);
-        _round_key_matrix(key, keys, 40);
-        _add_round_key(block,key);
+        sub_bytes(block, 0);
+        shift_rows(block, 0);
+        round_key_matrix(key, keys, 40);
+        add_round_key(block,key);
 
 
         printf("CIPHER MATRIX:\n");
@@ -244,18 +253,18 @@ size_t aes_encrypt(char* pass, char* string, size_t size, char** str_out, int mo
     return s_out;
 }
 
-size_t aes_decrypt(char* pass, char* string, size_t size, char** str_out, int mode, char* IV){
+size_t AES_Decrypt(char* pass, char* string, size_t size, char** str_out, int mode, char* IV){
 
     char key[4][4];
-    char* keys = _round_keys( pass, AES_128 );
+    char* keys = round_keys( pass, AES_128 );
     *str_out = (char*) malloc(size);
     char* str_out_aux = *str_out;
     char IV_round[4][4], IV_round_aux[4][4];
-    _round_key_matrix(IV_round,IV,0);
+    round_key_matrix(IV_round,IV,0);
     for(int k = 0; k < size/16; k++){
         char block[4][4];
-        _round_key_matrix(key,keys, 0);
-        _block_matrix(block, string + k * 16, 16);
+        round_key_matrix(key,keys, 0);
+        block_matrix(block, string + k * 16, 16);
         printf("CIPHER MATRIX:\n");
         for(int j = 0; j < 4; j++){
             for(int jj = 0; jj < 4; jj++)
@@ -265,23 +274,23 @@ size_t aes_decrypt(char* pass, char* string, size_t size, char** str_out, int mo
         printf("\n");
         memcpy(IV_round_aux, block, 16);
 
-        _round_key_matrix(key, keys, 40);
-        _add_round_key(block,key);
-        _shift_rows(block, 1);
-        _sub_bytes(block, 1);
+        round_key_matrix(key, keys, 40);
+        add_round_key(block,key);
+        shift_rows(block, 1);
+        sub_bytes(block, 1);
 
         for(int i = 0; i < 9; i++){
-            _round_key_matrix(key, keys, (9 - i) * 4 );
-            _add_round_key(block,key);
-            _mix_columns(block,1);
-            _shift_rows(block, 1);
-            _sub_bytes(block, 1);
+            round_key_matrix(key, keys, (9 - i) * 4 );
+            add_round_key(block,key);
+            mix_columns(block,1);
+            shift_rows(block, 1);
+            sub_bytes(block, 1);
         }
 
-        _round_key_matrix(key, keys, 0);
-        _add_round_key(block,key);
+        round_key_matrix(key, keys, 0);
+        add_round_key(block,key);
         
-        _add_round_key(block, IV_round);
+        add_round_key(block, IV_round);
         memcpy(IV_round, IV_round_aux, 16);
 
         printf("ORIGINAL MATRIX:\n");
@@ -301,7 +310,7 @@ size_t aes_decrypt(char* pass, char* string, size_t size, char** str_out, int mo
 
 }
 
-char* _round_keys(char* key, int mode){
+static char* round_keys(char* key, int mode){
     uint32_t keys[11][mode];
     for(int i = 0; i < mode; i++)
         keys[0][i] = ntohl(((uint32_t*) key)[i]);
@@ -328,7 +337,7 @@ char* _round_keys(char* key, int mode){
     return keys_out;
 }
 
-void _sub_bytes(char block[4][4], int inv){
+static void sub_bytes(char block[4][4], int inv){
     for(int i = 0; i < 4; i++)
         for(int ii = 0; ii < 4; ii++)
             if(inv)
@@ -336,7 +345,7 @@ void _sub_bytes(char block[4][4], int inv){
             else block[i][ii] = aes_sbox[ (block[i][ii] >> 4) & 0xF ][ block[i][ii] & 0xF ];
 }
 
-void _shift_rows(char block[4][4], int inv){
+static void shift_rows(char block[4][4], int inv){
     char aux, aux1, aux2;
     for(int i = 0; i < 4; i++){
         if(inv){
@@ -392,19 +401,19 @@ void _shift_rows(char block[4][4], int inv){
     }
 }
 
-void _add_round_key(char block[4][4], char key[4][4]){
+static void add_round_key(char block[4][4], char key[4][4]){
     for(int i = 0; i < 4; i++)
         for(int ii = 0; ii < 4; ii++)
             block[i][ii] ^= key[i][ii];
 }
 
-void _round_key_matrix(char key[4][4], char* keys, int init_word){
+static void round_key_matrix(char key[4][4], char* keys, int init_word){
     for(int i = 0; i < 4; i++)
         for(int ii = 0; ii < 4; ii++)
             key[3-ii][i] =  *( keys + init_word * 4 + i * 4 + ii );
 }
 
-void _block_matrix(char key[4][4], char* keys, char size){
+static void block_matrix(char key[4][4], char* keys, char size){
     for(int i = 0; i < 4; i++)
         for(int ii = 0; ii < 4; ii++)
             if( (i*4 + ii) < size)
@@ -412,25 +421,25 @@ void _block_matrix(char key[4][4], char* keys, char size){
             else key[ii][i] = 16 - size;
 }
 
-void _mix_columns(char block[4][4], int inv){
+static void mix_columns(char block[4][4], int inv){
     char aux_block[4][4];
     if(inv){
         for(int i = 0; i < 4; i++)
         for(int ii = 0; ii < 4; ii++)
-            aux_block[i][ii] =  _cross_product(block[0][ii], mixcolumns_m_inv[i][0]) ^ _cross_product(block[1][ii], mixcolumns_m_inv[i][1]) ^
-                                _cross_product(block[2][ii], mixcolumns_m_inv[i][2]) ^ _cross_product(block[3][ii], mixcolumns_m_inv[i][3]);
+            aux_block[i][ii] =  cross_product(block[0][ii], mixcolumns_m_inv[i][0]) ^ cross_product(block[1][ii], mixcolumns_m_inv[i][1]) ^
+                                cross_product(block[2][ii], mixcolumns_m_inv[i][2]) ^ cross_product(block[3][ii], mixcolumns_m_inv[i][3]);
         memcpy(block, aux_block, 16);
     }
     else{
         for(int i = 0; i < 4; i++)
             for(int ii = 0; ii < 4; ii++)
-                aux_block[i][ii] =  _cross_product(block[0][ii], mixcolumns_m[i][0]) ^ _cross_product(block[1][ii], mixcolumns_m[i][1]) ^
-                                    _cross_product(block[2][ii], mixcolumns_m[i][2]) ^ _cross_product(block[3][ii], mixcolumns_m[i][3]);
+                aux_block[i][ii] =  cross_product(block[0][ii], mixcolumns_m[i][0]) ^ cross_product(block[1][ii], mixcolumns_m[i][1]) ^
+                                    cross_product(block[2][ii], mixcolumns_m[i][2]) ^ cross_product(block[3][ii], mixcolumns_m[i][3]);
         memcpy(block, aux_block, 16);
     }
 }
 
-char _cross_product(char block_byte, char matrix_byte){
+static char cross_product(char block_byte, char matrix_byte){
     if(matrix_byte == EL1)
         return block_byte;
     else return gf_mul[ 16 * ((block_byte >> 4) & 0xF) + (block_byte & 0xF) ][matrix_byte];

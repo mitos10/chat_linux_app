@@ -33,19 +33,19 @@ typedef enum { TCP = 0, UDP = 1} SOCKET_TYPE;
 
 /** STRUCTS **/
 
-typedef struct pack_node {
+typedef struct pack_node_t {
 	uint32_t id : 30;
 	uint32_t status : 2;
 	char *user;
 	void *data;
 	uint32_t size;
-} pack_node;
+}pack_node_t;
 
-typedef struct dict_node{ 
+typedef struct dict_node_t{ 
 	char *user;
 	int32_t fd;
 	SOCKET_TYPE type;
-}dict_node;
+}dict_node_t;
 
 typedef struct {
 	struct pollfd sockFD[MAX_SOCKETS_OPEN];
@@ -53,7 +53,7 @@ typedef struct {
 	List sndQ;
 	List rcvQ;
 	List userFDdict;
-}UserSockHandler;
+}UserSockHandler_t;
 
 /*
 
@@ -73,7 +73,7 @@ PACKAGE FORMAT:
  * @brief Inits main socket and listening thread
  * 
  */
-void sockInit();
+void Socket_Init();
 
 /**
  * @brief Adds socket to dictionary entry
@@ -83,24 +83,24 @@ void sockInit();
  * @param type 
  * @return int enum SOCKET_ADD_RESP
  */
-SOCKET_ADD_RESP sockAdd(struct sockaddr_in *sockaddr, char *user, SOCKET_TYPE type);
+SOCKET_ADD_RESP Socket_Add(struct sockaddr_in *sockaddr, char *user, SOCKET_TYPE type);
 
 /**
  * @brief Write to send queue
  * 
- * @param data pointer to send data (pack_node type)
+ * @param data pointer to send data (pack_node_t type)
  * @return int id value of package, -1 on error
  */
 
-int32_t sockWriteQ(pack_node* data);
+int32_t Socket_WriteQueue(pack_node_t* data);
 
 /**
  * @brief Read to send queue
  * 
- * @return pack_node*
+ * @return pack_node_t*
  */
 
-pack_node* sockReadQ(pack_node *data);
+pack_node_t* Socket_ReadQueue(pack_node_t *data);
 
 /**
  * @brief Search if package with id is sent
@@ -109,76 +109,8 @@ pack_node* sockReadQ(pack_node *data);
  * @return int TRUE/FALSE
  */
 
-uint8_t sockIsPckgSent(int32_t id);
+uint8_t Socket_IsPackageSent(int32_t id);
 
 /** END GLOBAL FUNCTIONS **/
-
-///////////////////////////////////////////////////////////////////////////
-
-/** LOCAL FUNCTIONS **/
-
-static void* _connectionThread(void * param);
-
-/**
- * @brief Compare user node on dictionary user - file descriptor
- * 
- * @param s_data string with username
- * @param data dictionary node
- * @return unsigned TRUE/FALSE
- */
-
-static int16_t _cmp_username(void* s_data, void* data);
-
-/**
- * @brief Compare pack id on queue
- * 
- * @param s_data ptr to id number
- * @param data queue node
- * @return unsigned TRUE/FALSE
- */
-
-static int16_t _cmp_id(void* s_data, void* data);
-
-/**
- * @brief Compare user node on dictionary file descriptor - user
- * 
- * @param s_data pointer with file descriptor
- * @param data dictionary node
- * @return unsigned TRUE/FALSE
- */
-
-static int16_t _cmp_fd(void* s_data, void* data);
-
-/**
- * @brief Internal function to send package from queue
- * 
- * @return int 
- */
-
-static int32_t _sendPackage();
-
-/**
- * @brief Internal function to receive package to queue
- * 
- * @param fd file descriptor
- * @return int size received
- */
-
-static int32_t _recvPackage(int32_t fd);
-
-/**
- * @brief Print queue to file
- * 
- * @param f File pointer
- * @param nd data
- */
-
-static void _print_queue(FILE*f, void* nd);
-
-static void _delete_queue(void* data);
-
-static void _print_dict(FILE*f, void* nd);
-
-/** END LOCAl FUNCTIONS **/
 
 #endif

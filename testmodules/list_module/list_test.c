@@ -1,4 +1,5 @@
 #include "../../lib/header/list.h"
+#include "../../lib/header/debug.h"
 #include <string.h>
 
 void _stringLprint(FILE* f, void* data){
@@ -17,10 +18,10 @@ void _stringLsortBubble(List* l, uint16_t func_cmp) {
     uint8_t is_sorted = 0;
     while(!is_sorted){
         is_sorted = 1;
-        for(int i = 0; i < l->size - 1; i++){
-            int cmp = l->cmpData[func_cmp](listGetData(l,i), listGetData(l,i+1));
+        for(size_t i = 0; i < l->size - 1; i++){
+            int cmp = l->cmpData[func_cmp](List_GetData(l,i), List_GetData(l,i+1));
             if(cmp > 0){
-                listMove(l,i+1,i);
+                List_Move(l,i+1,i);
                 is_sorted = 0;
             }
         }
@@ -28,7 +29,9 @@ void _stringLsortBubble(List* l, uint16_t func_cmp) {
 
 }
 
-void main(){
+int main(){
+
+    Memory_DefaultInit(100000);
     
     List stringL = {
         .root = NULL,
@@ -39,46 +42,46 @@ void main(){
         .sortNode = { _stringLsortBubble, NULL},
     };
 
-    listInsert(&stringL, "hi", sizeof("hi"), LAST_POS);
-    listInsert(&stringL, "what", sizeof("what"), LAST_POS);
-    listInsert(&stringL, "is", sizeof("is"), LAST_POS);
-    listInsert(&stringL, "this", sizeof("this"), LAST_POS);
+    List_Insert(&stringL, "hi", sizeof("hi"), LAST_POS);
+    List_Insert(&stringL, "what", sizeof("what"), LAST_POS);
+    List_Insert(&stringL, "is", sizeof("is"), LAST_POS);
+    List_Insert(&stringL, "this", sizeof("this"), LAST_POS);
 
-    listPrint(&stringL, stdout);
+    List_Print(&stringL, stdout);
     printf("\n");
 
-    listSwap(&stringL, 0, 3);
+    List_Swap(&stringL, 0, 3);
 
-    for(int i = 0; i < listGetSize(&stringL); i++)
-        printf("%d. %s\n", i+1, (char*)listGetData(&stringL, i));
+    for(size_t i = 0; i < List_GetSize(&stringL); i++)
+        printf("%ld. %s\n", i+1, (char*)List_GetData(&stringL, i));
 
     printf("\n");
 
     uint16_t pos = 0;
-    char* str = listFind(&stringL, &pos, "is", 0);
+    char* str = List_Find(&stringL, &pos, "is", 0);
 
-    printf("Search function.\nPos : %d, Str: %s, Str from pos: %s\n\n", pos+1, str, (char*)listGetData(&stringL,pos));
+    printf("Search function.\nPos : %d, Str: %s, Str from pos: %s\n\n", pos+1, str, (char*)List_GetData(&stringL,pos));
     
-    for(int i = 0; listGetSize(&stringL); i++){
-        listPrint(&stringL, stdout);
-        listDelete(&stringL, LAST_POS);
+    for(int i = 0; List_GetSize(&stringL); i++){
+        List_Print(&stringL, stdout);
+        List_Delete(&stringL, LAST_POS);
         printf("\n");
     }
 
-    listDeleteAll(&stringL);
+    List_DeleteAll(&stringL);
 
-    listInsert(&stringL, "hi", sizeof("hi"), LAST_POS);
-    listInsert(&stringL, "what", sizeof("what"), LAST_POS);
-    listInsert(&stringL, "is", sizeof("is"), LAST_POS);
-    listInsert(&stringL, "this", sizeof("this"), LAST_POS);
+    List_Insert(&stringL, "hi", sizeof("hi"), LAST_POS);
+    List_Insert(&stringL, "what", sizeof("what"), LAST_POS);
+    List_Insert(&stringL, "is", sizeof("is"), LAST_POS);
+    List_Insert(&stringL, "this", sizeof("this"), LAST_POS);
 
-    listSort(&stringL,0,0);
+    List_Sort(&stringL,0,0);
 
-    for(int i= 0; listGetSize(&stringL); i++){
-        listPrint(&stringL, stdout);
-        listDelete(&stringL,0);
+    for(int i= 0; List_GetSize(&stringL); i++){
+        List_Print(&stringL, stdout);
+        List_Delete(&stringL,0);
         printf("\n");
     }
 
-
+    return 0;
 }

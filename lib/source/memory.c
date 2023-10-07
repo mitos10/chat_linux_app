@@ -11,22 +11,35 @@
 #undef calloc
 #undef free
 
+/** LOCAL FUNCTIONS **/
+
+static int16_t cmp_id(void* s_data, void* data);
+
+static int16_t cmp_trace_id_ptr(void* s_data, void* data);
+static void print_trace_node(FILE* f, void* nd);
+static void delete_trace_node(void* data);
+
+static int16_t cmp_rsvd_chunk_id_ptr(void* s_data, void* data);
+// static void _print_rsvd_chunk_node(FILE* f, void* nd);
+// static void _delete_rsvd_chunk_node(void* data);
+
+
 enum { CMP_ID = 0, CMP_ID_PTR = 0};
 
 List _pool_list = {
     .root = NULL,
     .size = 0,
-    .cmpData = {[CMP_ID] = _cmp_id, NULL},
-    .printNode = _print_node,
+    .cmpData = {[CMP_ID] = cmp_id, NULL},
+    .printNode = NULL,
     .deleteNode = NULL,
     .sortNode = {NULL},
 };
 
-void* memDefaultInit(size_t size){
-    memInit(DEFAULT_POOL, size, "trace_default_mem.txt");
+void* Memory_DefaultInit(size_t size){
+    return Memory_Init(DEFAULT_POOL, size, "trace_default_mem");
 }
 
-void* memInit(char* id, size_t size, char* traceFileRoute){
+void* Memory_Init(char* id, size_t size, char* traceFileRoute){
 
 	//Argument sanity check
 	__ASSERT__(id != NULL,__ASSERT_NULL__)
@@ -36,45 +49,64 @@ void* memInit(char* id, size_t size, char* traceFileRoute){
     uint16_t total_size = CHUNK_ALLOC_REG_SZ(size) * CHUNK_SIZE * 8;
     printf("SIZE %d\n",CHUNK_ALLOC_REG_SZ(size));
     
+    char* buffer = NULL;
     poolNode aux = {
         .data = calloc(total_size + CHUNK_ALLOC_REG_SZ(size), sizeof(uint8_t)),
         .chunkReg = aux.data + total_size,
         .size = total_size,
         .id = "",
-        .file = traceFileRoute? fopen(traceFileRoute, "w"): stdout,
+        .file_trace_hr = traceFileRoute? fopen((buffer = strcat(
+                                                            strcpy(
+                                                                (char*) calloc(strlen(traceFileRoute) + strlen("_hr.txt") + 1, sizeof(char)), 
+                                                                traceFileRoute),
+                                                        "_hr.txt")),
+                                                "w")
+                                        : stdout,
+        .file_trace = traceFileRoute? fopen( strcat(
+                                                strcpy(buffer, traceFileRoute),
+                                                ".txt"),
+                                            "w")
+                                        : stdout,
+        .rsvdChunk = {
+            .root = NULL,
+            .size = 0,
+            .printNode = NULL, //_print_rsvd_chunk_node,
+            .cmpData = {[CMP_ID_PTR] = cmp_rsvd_chunk_id_ptr, NULL},
+            .deleteNode = NULL,//_delete_rsvd_chunk_node,
+        },
         .monHandler = {
             .sizeAllocated = 0,
             .sizeEffective = 0,
             .trace = {
-            .root = NULL,
-            .size = 0,
-            .printNode = _print_node,
-            .cmpData = {[CMP_ID_PTR] = _cmp_id_ptr, NULL},
-            .deleteNode = _delete_node,
+                .root = NULL,
+                .size = 0,
+                .printNode = print_trace_node,
+                .cmpData = {[CMP_ID_PTR] = cmp_trace_id_ptr, NULL},
+                .deleteNode = delete_trace_node,
             },
         }
     };
     strcpy(aux.id, id);
 
     //Add pool to list
-    NODE* nd = malloc(sizeof(NODE));
+    node_t* nd = malloc(sizeof(node_t));
 	nd->data = memcpy(malloc(sizeof(poolNode)), &aux, sizeof(poolNode));
 	nd->next_ptr = NULL;
-    listInsertRsvd(&_pool_list, nd, LAST_POS);
+    List_InsertNode(&_pool_list, nd, LAST_POS);
     
     //Return ptr to initial position
     return aux.data;
 }
 
-void* cmalloc(size_t size, char* id){
+void* Memory_CustomMalloc(size_t size, char* id){
 
-    poolNode* aux = listFind(&_pool_list, NULL, id, CMP_ID);
+    poolNode* aux = List_Find(&_pool_list, NULL, id, CMP_ID);
 
     //If block of memory is not found return NULL
     if(NULL == aux)
         return NULL;
 
-    //Total size in chunks of the memory block reserved by memInit(char* id , size_t size)
+    //Total size in chunks of the memory block reserved by Memory_Init(char* id , size_t size)
     uint16_t block_chunk_sz = CHUNK_ALLOC_REG_SZ(aux->size);
     printf("SIZE %d %d\n",block_chunk_sz, aux->size);
     
@@ -126,10 +158,10 @@ void* cmalloc(size_t size, char* id){
     return NULL;
 }
 
-void cfree(void* ptr, char* id){
+void Memory_CustomFree(void* ptr, char* id){
 
     // Gets Pool with id "id"
-    poolNode* aux = listFind(&_pool_list, NULL, id, CMP_ID);
+    poolNode* aux = List_Find(&_pool_list, NULL, id, CMP_ID);
     
     uint8_t* data_ptr = ptr;
     
@@ -151,109 +183,143 @@ void cfree(void* ptr, char* id){
     return;
 }
 
-void memPrint(char* id){
+void Memory_Print(char* id){
 
     //Find memory pool by id
-    poolNode* aux = listFind(&_pool_list, NULL, id, CMP_ID);
+    poolNode* aux = List_Find(&_pool_list, NULL, id, CMP_ID);
 
     //If pool is not found return 
     if(NULL == aux)
         return;
 
     //Print Layout
-    fprintf(aux->file, "Memory Layout\n");        
+    fprintf(aux->file_trace_hr, "Memory Layout\n");        
     for(int i = 0; i < CHUNK_ALLOC_REG_SZ(aux->size); i++)
-        fprintf(aux->file, "0x%.2hhX ",aux->chunkReg[i]);
-    fprintf(aux->file, "\n\n");
+        fprintf(aux->file_trace_hr, "0x%.2hhX ",aux->chunkReg[i]);
+    fprintf(aux->file_trace_hr, "\n\n");
 }
 
-void* memMonCmalloc(size_t size, char* id, char* FILE, uint16_t LINE){
-    poolNode* aux = listFind(&_pool_list, NULL, id, CMP_ID);
+void* Memory_MonitorCustomMalloc(size_t size, char* id, char* FILE, uint16_t LINE){
+    poolNode* aux = List_Find(&_pool_list, NULL, id, CMP_ID);
 
     if(NULL == aux)
         return NULL;
 
+    chunkNode chNd = {
+        .ptr = Memory_CustomMalloc(size, id),
+        .size = size,
+    };
+
     traceNode monNd = {
         .FILE = strcpy( calloc(strlen(FILE), sizeof(uint8_t) ) , FILE),
         .LINE = LINE,
-        .ptr_id = cmalloc(size, id),
+        .op = MALLOC_OP,
+        .ptr_id = chNd.ptr,
         .time = clock() / (CLOCKS_PER_SEC / 1000),
         .size = size, 
     };
 
-    NODE* nd = malloc(sizeof(NODE));
-	nd->data = memcpy(malloc(sizeof(traceNode)), &monNd, sizeof(traceNode));
-	nd->next_ptr = NULL;
 
     if(NULL == monNd.ptr_id){
-        fprintf(aux->file, "Memory pool: \"%s\" out of memory.\tSize: %-10lu Time %-10ld File: %-20s Line: %-5d\n\n",
+        fprintf(aux->file_trace_hr, "Memory pool: \"%s\" out of memory.\tSize: %-10lu Time %-10ld File: %-20s Line: %-5d\n\n",
                                     id, monNd.size, monNd.time, monNd.FILE, monNd.LINE);
         #ifdef __RECORD_ALL__
-            memMonPrint(id);
+            Memory_MonitorPrint(id);
         #endif
         free(monNd.FILE);
         return NULL;
     }
+
+    node_t* nd = malloc(sizeof(node_t));
+	nd->data = memcpy(malloc(sizeof(chunkNode)), &chNd, sizeof(chunkNode));
+	nd->next_ptr = NULL;
+
+    List_InsertNode(& aux->rsvdChunk, nd, LAST_POS);
+
+    nd = malloc(sizeof(node_t));
+	nd->data = memcpy(malloc(sizeof(traceNode)), &monNd, sizeof(traceNode));
+	nd->next_ptr = NULL;
+
     aux->monHandler.sizeAllocated += ceil( (float)(size+METADATA_SIZE) / CHUNK_SIZE) * CHUNK_SIZE;
     aux->monHandler.sizeEffective += size;
-    listInsertRsvd(& aux->monHandler.trace, nd, LAST_POS);
+    List_InsertNode(& aux->monHandler.trace, nd, LAST_POS);
     
     #ifdef __RECORD_ALL__
-        memMonPrint(id);
+        Memory_MonitorPrint(id);
     #endif
 
     return monNd.ptr_id;
 }
 
-void memMonCfree(void* ptr, char* id, char* FILE, uint16_t LINE){
-    poolNode* aux = listFind(&_pool_list, NULL, id, CMP_ID);
+void Memory_MonitorCustomFree(void* ptr, char* id, char* FILE, uint16_t LINE){
+    poolNode* aux = List_Find(&_pool_list, NULL, id, CMP_ID);
     if(NULL == aux)
         return;
     uint16_t pos = 0;
-    traceNode* aux_node = listFind(&aux->monHandler.trace, &pos, ptr, CMP_ID_PTR);
+    chunkNode* aux_node = List_Find(&aux->rsvdChunk, &pos, ptr, CMP_ID_PTR);
     if(NULL == aux_node){
-        fprintf(aux->file, "Ptr %p already freed or never allocated. FILE %s, LINE %d\n\n", ptr, FILE, LINE);
+        fprintf(aux->file_trace_hr, "Ptr %p already freed or never allocated. FILE %s, LINE %d\n\n", ptr, FILE, LINE);
         return; 
     }
+
+    traceNode monNd = {
+        .FILE = strcpy( calloc(strlen(FILE), sizeof(uint8_t) ) , FILE),
+        .LINE = LINE,
+        .op = FREE_OP,
+        .ptr_id = aux_node->ptr,
+        .time = clock() / (CLOCKS_PER_SEC / 1000),
+        .size = aux_node->size, 
+    };
+
+    node_t* nd = malloc(sizeof(node_t));
+	nd->data = memcpy(malloc(sizeof(traceNode)), &monNd, sizeof(traceNode));
+	nd->next_ptr = NULL;
+
     aux->monHandler.sizeAllocated -= ceil( (float)(aux_node->size+METADATA_SIZE) / CHUNK_SIZE) * CHUNK_SIZE;
     aux->monHandler.sizeEffective -= aux_node->size;
-    free(listDeleteRsvd(&aux->monHandler.trace, pos));
-    cfree(ptr, id);
+    List_InsertNode(& aux->monHandler.trace, nd, LAST_POS);
+
+    free(List_DeleteNode(&aux->rsvdChunk, pos));
+    Memory_CustomFree(ptr, id);
     #ifdef __RECORD_ALL__
-        memMonPrint(id);
+        Memory_MonitorPrint(id);
     #endif
 }
 
-void memMonPrint(char *id){
-    poolNode* aux = listFind(&_pool_list, NULL, id, CMP_ID);
+void Memory_MonitorPrint(char *id){
+    poolNode* aux = List_Find(&_pool_list, NULL, id, CMP_ID);
     if(NULL == aux)
         return;
-    if(listGetSize(&aux->monHandler.trace)){
-        fprintf(aux->file, "Allocated Memory on \"%s\" (%dB/%dB) Space effectively used: %.2f%% :\n",
+    if(List_GetSize(&aux->monHandler.trace)){
+        fprintf(aux->file_trace_hr, "Allocated Memory on \"%s\" (%dB/%dB) Space effectively used: %.2f%% :\n",
         id, aux->monHandler.sizeAllocated, aux->size, 
         (float)aux->monHandler.sizeEffective / (aux->monHandler.sizeAllocated?aux->monHandler.sizeAllocated:1) * 100);
-        listPrint(&aux->monHandler.trace, aux->file);
-        fprintf(aux->file, "\n");
+        List_Print(&aux->monHandler.trace, aux->file_trace_hr);
+        fprintf(aux->file_trace_hr, "\n");
     }
 }
 
-static void _print_node(FILE* f, void* nd){
+static void print_trace_node(FILE* f, void* nd){
     traceNode* aux =nd;
-    fprintf(f, "Memory calloc at position : "
+    fprintf(f, "Memory %s at position : "
             "%-20p Size: %-10lu Time: %-10ld File: %-20s Line: %-5d\n",
-            aux->ptr_id, aux->size, aux->time, aux->FILE, aux->LINE);
+            aux->op == MALLOC_OP ? "calloc" : aux->op == FREE_OP? "free" : "calloc", aux->ptr_id, aux->size, aux->time, aux->FILE, aux->LINE);
     fflush(f);
 }
 
-static void _delete_node(void* data){
+static void delete_trace_node(void* data){
     traceNode* aux = data;
     free(aux->FILE);
 }
 
-static int16_t _cmp_id(void* s_data, void* data){
+static int16_t cmp_id(void* s_data, void* data){
     return strcmp(s_data, ((poolNode*)data)->id);
 }
 
-static int16_t _cmp_id_ptr(void* s_data, void* data){
+static int16_t cmp_trace_id_ptr(void* s_data, void* data){
     return !(s_data == ((traceNode*)data)->ptr_id);
+}
+
+static int16_t cmp_rsvd_chunk_id_ptr(void* s_data, void* data){
+    return !(s_data == ((chunkNode*)data)->ptr);
 }

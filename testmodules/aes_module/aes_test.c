@@ -2,7 +2,7 @@
 
 int main(){
 
-    char* aux = aes_encrypt( "Thats my Kung Fu", "Two One Nine TwoTwo One Nine TwoCosasne threeTwo", AES_128);
-    aes_decrypt( "Thats my Kung Fu", aux, AES_128);
+    char* aux = AES_Encrypt( "Thats my Kung Fu", "Two One Nine TwoTwo One Nine TwoCosasne threeTwo", AES_128);
+    AES_Decrypt( "Thats my Kung Fu", aux, AES_128);
     
 }

@@ -11,7 +11,7 @@
     fprintf(stdout, "__DEBUG_NULL__ FILE: %s LINE %d FUNCTION: %s\n", __FILE__, __LINE__, __FUNCTION__);
 
 #define __DEBUG_BACKTRACE__\
-  fprintf(stdout, "-------------------------------------\
+  fprintf(stdout, "\n-----------------------------------\
 --------------------------------------------------------\
 ---------------------------------------------------\n");\
   void *trace[16];                                      \
@@ -37,7 +37,7 @@
         ++q;                                            \
     /*Make syscall to addr2line*/                       \
     char syscom[256];                                   \
-    sprintf(syscom,"addr2line %.*s -e %.*s",            \
+    sprintf(syscom,"addr2line %.*s -f -e %.*s",         \
     (int)q- (int)p - 2, &messages[i][p+2],              \
     (int)p, messages[i]);                               \
     /*printf("%s\n", syscom);*/                         \
@@ -52,12 +52,12 @@
     fprintf(stdout, "__DEBUG_TEST1__ FILE: %s LINE %d\n", __FILE__, __LINE__);
 
 #define __DEBUG_SOCK_WRITE_Q__\
-    printf("Send Queue\n");             \
-	listPrint(&_UsrSck_h.sndQ, stdout); \
+  printf("Send Queue\n");             \
+	List_Print(&_UsrSck_h.sndQ, stdout); \
 	printf("Rcv Queue\n");              \
-	listPrint(&_UsrSck_h.rcvQ, stdout); \
+	List_Print(&_UsrSck_h.rcvQ, stdout); \
 	fflush(stdout);                     \
-    fprintf(stdout, "__DEBUG_TEST1__ FILE: %s LINE %d\n", __FILE__, __LINE__);
+  fprintf(stdout, "__DEBUG_SOCK_WRITE_Q__ FILE: %s LINE %d\n", __FILE__, __LINE__);
 
 #define __DEBUG_TEST2__\
     fprintf(stdout, "__DEBUG_TEST2__ FILE: %s LINE %d\n", __FILE__, __LINE__);

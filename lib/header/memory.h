@@ -9,20 +9,28 @@
 
 /** DEFINES **/
 
-#define CHUNK_SIZE 32
+#define CHUNK_SIZE  ((uint16_t)32)
 #define CHUNK_ALLOC_REG_SZ(size) (uint16_t) ceil( (double)size / (CHUNK_SIZE*8) )
-#define METADATA_SIZE 2
-#define HIGHEST_BIT 0x80
-#define REG_BITS 8
+#define METADATA_SIZE ((uint16_t)2)
+#define HIGHEST_BIT ((uint16_t) 0x80)
+#define REG_BITS ((uint16_t) 8)
 #define DEFAULT_POOL "Default Pool"
 
 /**MACROS**/
 
-#define malloc(SIZE)            memMonCmalloc(SIZE, DEFAULT_POOL, __FILE__, __LINE__)
-#define calloc(SIZE, T_SIZE)    memMonCmalloc(SIZE * T_SIZE, DEFAULT_POOL, __FILE__, __LINE__)
-#define free(PTR)               memMonCfree(PTR, DEFAULT_POOL, __FILE__, __LINE__)
+#define malloc(SIZE)            Memory_MonitorCustomMalloc(SIZE, DEFAULT_POOL, __FILE__, __LINE__)
+#define calloc(SIZE, T_SIZE)    Memory_MonitorCustomMalloc(SIZE * T_SIZE, DEFAULT_POOL, __FILE__, __LINE__)
+#define free(PTR)               Memory_MonitorCustomFree(PTR, DEFAULT_POOL, __FILE__, __LINE__)
 
-#warning malloc, calloc and free have been overrided 
+//#warning malloc, calloc and free have been overrided 
+
+/**ENUMS**/
+
+typedef enum {
+    CALLOC_OP = 0,
+    MALLOC_OP,
+    FREE_OP,
+} MEM_OP;
 
 /*
 
@@ -85,7 +93,14 @@ typedef struct traceNode
     void* ptr_id;
     clock_t time;
     size_t size;
+    MEM_OP op;
 }traceNode;
+
+typedef struct chunkNode
+{
+    void* ptr;
+    size_t size;
+}chunkNode;
 
 typedef struct poolNode
 {
@@ -96,8 +111,10 @@ typedef struct poolNode
     uint8_t* data;
     uint8_t* chunkReg;
 
+    List rsvdChunk;
     Monitor monHandler;
-    FILE* file;
+    FILE* file_trace_hr;
+    FILE* file_trace;
 
 }poolNode;
 
@@ -109,7 +126,7 @@ typedef struct poolNode
  * @param size amount of reserved memory for the main pool
  * @return void* 
  */
-void* memDefaultInit(size_t size);
+void* Memory_DefaultInit(size_t size);
 
 /**
  * @brief Initializes a memory pool with an id and size
@@ -118,7 +135,7 @@ void* memDefaultInit(size_t size);
  * @param size amount of reserved memory for the pool
  * @return void* 
  */
-void* memInit(char* id, size_t size, char* traceFileRoute);
+void* Memory_Init(char* id, size_t size, char* traceFileRoute);
 
 /**
  * @brief Custom malloc call
@@ -127,7 +144,7 @@ void* memInit(char* id, size_t size, char* traceFileRoute);
  * @param id pool identifier
  * @return void* pointer to start of allocated space
  */
-void* cmalloc(size_t size, char* id);
+void* Memory_CustomMalloc(size_t size, char* id);
 
 /**
  * @brief Custom free call
@@ -135,17 +152,17 @@ void* cmalloc(size_t size, char* id);
  * @param ptr pointer to start address
  * @param id pool identifier
  */
-void cfree(void* ptr, char* id);
+void Memory_CustomFree(void* ptr, char* id);
 
 /**
  * @brief Prints memory pool
  * 
  * @param id pool identifier
  */
-void memPrint(char* id);
+void Memory_Print(char* id);
 
 /**
- * @brief Wrapper for cmalloc function including extra-info
+ * @brief Wrapper for Memory_CustomMalloc function including extra-info
  * 
  * @param size to be allocated
  * @param id pool identifier
@@ -153,30 +170,23 @@ void memPrint(char* id);
  * @param LINE where the call is made
  * @return void* pointer to start of allocated space
  */
-void* memMonCmalloc(size_t size, char* id, char* FILE, uint16_t LINE);
+void* Memory_MonitorCustomMalloc(size_t size, char* id, char* FILE, uint16_t LINE);
 
 /**
- * @brief Wrapper for cfree function including extra-information
+ * @brief Wrapper for Memory_CustomFree function including extra-information
  * 
  * @param ptr pointer to start address
  * @param id pool identifier
  * @param FILE where the call is made
  * @param LINE where the call is made
  */
-void memMonCfree(void* ptr, char* id, char* FILE, uint16_t LINE);
+void Memory_MonitorCustomFree(void* ptr, char* id, char* FILE, uint16_t LINE);
 
 /**
  * @brief Prints memory pool with extra-info
  * 
  * @param id pool identifier
  */
-void memMonPrint(char *id);
-
-/** LOCAL FUNCTIONS **/
-
-static int16_t _cmp_id(void* s_data, void* data);
-static int16_t _cmp_id_ptr(void* s_data, void* data);
-static void _print_node(FILE* f, void* nd);
-static void _delete_node(void* data);
+void Memory_MonitorPrint(char *id);
 
 #endif

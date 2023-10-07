@@ -1,19 +1,14 @@
 #include "../header/file_crypt.h"
 
-char* generate_iv(int size){
-    
-    //Allocate iv vector
-    char* iv = calloc(size,sizeof(char));
+/**
+ * @brief Generate random initial vector
+ * 
+ * @param size of initial vector
+ * @return char* output string of initial vector
+ */
+static char* generate_iv(int size);
 
-    //Generate random string iv[size]
-    srand(time(NULL));
-    for(int i = 0; i < size; i++)
-        iv[i] = rand() % 256;
-
-    return iv;
-}
-
-void enc_file(struct file_crypt *data){
+void File_Encrypt(struct file_crypt *data){
 
     //Copy buff from data
     char* buff = malloc(data->size * sizeof(char));
@@ -24,7 +19,7 @@ void enc_file(struct file_crypt *data){
     fflush(stdout);
 
     //Encrypt plain text using aes-128
-    aes_encrypt(data->pass, buff, data->size, &(data->buff), AES_128, iv);
+    AES_Encrypt(data->pass, buff, data->size, &(data->buff), AES_128, iv);
     
     //Write initial vector to file
     for(int i = 0; i < data->iv_sz; i++)
@@ -36,7 +31,7 @@ void enc_file(struct file_crypt *data){
     fclose(data->file);
 }
 
-void dec_file(struct file_crypt *data){
+void File_Decrypt(struct file_crypt *data){
 
     //Get encrypted data size
     if(data->size == 0){
@@ -54,6 +49,19 @@ void dec_file(struct file_crypt *data){
     char *buff = malloc(data->size * sizeof(char));
     for(int i = 0; i < data->size; i++ )
         buff[i] = getc(data->file);
-    aes_decrypt( data->pass, buff, data->size, &(data->buff), AES_128, iv);
+    AES_Decrypt( data->pass, buff, data->size, &(data->buff), AES_128, iv);
 
+}
+
+static char* generate_iv(int size){
+    
+    //Allocate iv vector
+    char* iv = calloc(size,sizeof(char));
+
+    //Generate random string iv[size]
+    srand(time(NULL));
+    for(int i = 0; i < size; i++)
+        iv[i] = rand() % 256;
+
+    return iv;
 }
